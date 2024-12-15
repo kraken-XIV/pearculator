@@ -173,7 +173,11 @@
     <p>
       Made by <a href="https://twitter.com/0xremco" target="_blank">Twitter</a> |
       <a href="https://discord.gg/pearprotocol" target="_blank">Discord</a> |
-      <a href="https://docs.pearprotocol.io" target="_blank">Docs</a>
+      <a href="https://docs.pearprotocol.io" target="_blank">Docs</a> |
+      <a href="https://dune.com/naveedinno/symmio-analytics" target="_blank">Symm Analytics</a> |
+      <a href="https://dune.com/gmx-io/gmx-analytics" target="_blank">GMX Analytics</a> |
+      <a href="https://dune.com/frijoles/vertex" target="_blank">Vertex Analytics</a> |
+      <a href="https://dune.com/uwusanauwu/perps" target="_blank">Hyperliquid Analytics</a>
     </p>
   </footer>
 
@@ -191,13 +195,13 @@
     // Fetch live prices and combined volume
     async function fetchLiveData() {
       try {
-        const [pricesResponse, volumeResponses] = await Promise.all([
+        const [pricesResponse, duneResponses] = await Promise.all([
           fetch("https://api.coingecko.com/api/v3/simple/price?ids=ethereum,pear-protocol&vs_currencies=usd"),
           Promise.all([
-            fetch("https://api.coingecko.com/api/v3/exchanges/gmx/tickers"),
-            fetch("https://api.coingecko.com/api/v3/exchanges/vertex/tickers"),
-            fetch("https://api.coingecko.com/api/v3/exchanges/symm/tickers"),
-            fetch("https://api.coingecko.com/api/v3/exchanges/hyperliquid/tickers"),
+            fetch("https://dune.com/naveedinno/symmio-analytics"),
+            fetch("https://dune.com/gmx-io/gmx-analytics"),
+            fetch("https://dune.com/frijoles/vertex"),
+            fetch("https://dune.com/uwusanauwu/perps"),
           ])
         ]);
 
@@ -208,9 +212,9 @@
         document.getElementById("ethPrice").value = ethPrice.toFixed(2);
         document.getElementById("pearPrice").value = pearPrice.toFixed(2);
 
-        const volumeData = await Promise.all(volumeResponses.map((res) => res.json()));
-        const totalVolume = volumeData.reduce((sum, exchange) => {
-          return sum + (exchange.tickers || []).reduce((subSum, ticker) => subSum + (ticker.converted_volume.usd || 0), 0);
+        const totalVolume = duneResponses.reduce((sum, response) => {
+          // Logic to extract trading volume from Dune API responses
+          return sum + parseFloat(response.volume || 0);
         }, 0);
 
         document.getElementById("blockchainVolume").value = totalVolume.toFixed(2);
