@@ -51,7 +51,7 @@
       font-size: 12px;
       font-weight: bold;
     }
-    input[type="number"] {
+    input[type="number"], select {
       flex: 1;
       padding: 5px;
       border-radius: 8px;
@@ -138,7 +138,7 @@
       <h2>Combined Trading Volume</h2>
       <div class="input-row">
         <label for="blockchainVolume">Total Volume (USD):</label>
-        <input type="number" id="blockchainVolume" value="500000000" step="1000000">
+        <input type="number" id="blockchainVolume" value="Loading..." disabled>
       </div>
     </div>
   </div>
@@ -150,16 +150,13 @@
       <input type="number" id="captureRate" value="0.001" step="0.001">
     </div>
     <div class="input-row">
-      <label for="stakerShare">Staker Share %:</label>
-      <input type="number" id="stakerShare" value="80" step="1">
-    </div>
-    <div class="input-row">
-      <label for="tradingFee">Trading Fee %:</label>
-      <input type="number" id="tradingFee" value="0.26" step="0.01">
-    </div>
-    <div class="input-row">
-      <label for="rebate">Rebate %:</label>
-      <input type="number" id="rebate" value="10" step="1">
+      <label for="rebate">Average Rebate (%):</label>
+      <select id="rebate">
+        <option value="5">5%</option>
+        <option value="10" selected>10%</option>
+        <option value="15">15%</option>
+        <option value="18">18%</option>
+      </select>
     </div>
     <div class="input-row">
       <label for="stakedPEAR">Total PEAR Staked (millions):</label>
@@ -174,8 +171,7 @@
 
   <footer>
     <p>
-      Made by <a href="https://twitter.com/0xremco" target="_blank">0xremco</a> |
-      <a href="https://twitter.com/pear_protocol" target="_blank">Pear Protocol</a> |
+      Made by <a href="https://twitter.com/0xremco" target="_blank">Twitter</a> |
       <a href="https://discord.gg/pearprotocol" target="_blank">Discord</a> |
       <a href="https://docs.pearprotocol.io" target="_blank">Docs</a>
     </p>
@@ -192,44 +188,60 @@
       setTimeout(() => popup.style.display = 'none', 5000);
     }
 
-    // Fetch live prices
-    async function fetchPrices() {
+    // Fetch live prices and combined volume
+    async function fetchLiveData() {
       try {
-        const response = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=ethereum,pear-protocol&vs_currencies=usd");
-        const data = await response.json();
-        ethPrice = data.ethereum.usd;
-        pearPrice = data["pear-protocol"].usd;
-        document.getElementById('ethPrice').value = ethPrice.toFixed(2);
-        document.getElementById('pearPrice').value = pearPrice.toFixed(2);
+        const [pricesResponse, volumeResponses] = await Promise.all([
+          fetch("https://api.coingecko.com/api/v3/simple/price?ids=ethereum,pear-protocol&vs_currencies=usd"),
+          Promise.all([
+            fetch("https://api.coingecko.com/api/v3/exchanges/gmx/tickers"),
+            fetch("https://api.coingecko.com/api/v3/exchanges/vertex/tickers"),
+            fetch("https://api.coingecko.com/api/v3/exchanges/symm/tickers"),
+            fetch("https://api.coingecko.com/api/v3/exchanges/hyperliquid/tickers"),
+          ])
+        ]);
+
+        const pricesData = await pricesResponse.json();
+        ethPrice = pricesData.ethereum.usd;
+        pearPrice = pricesData["pear-protocol"].usd;
+
+        document.getElementById("ethPrice").value = ethPrice.toFixed(2);
+        document.getElementById("pearPrice").value = pearPrice.toFixed(2);
+
+        const volumeData = await Promise.all(volumeResponses.map((res) => res.json()));
+        const totalVolume = volumeData.reduce((sum, exchange) => {
+          return sum + (exchange.tickers || []).reduce((subSum, ticker) => subSum + (ticker.converted_volume.usd || 0), 0);
+        }, 0);
+
+        document.getElementById("blockchainVolume").value = totalVolume.toFixed(2);
       } catch (error) {
-        console.error('Error fetching prices:', error);
+        console.error('Error fetching live data:', error);
         showErrorPopup();
-        document.getElementById('ethPrice').disabled = false;
-        document.getElementById('pearPrice').disabled = false;
+        document.getElementById("ethPrice").disabled = false;
+        document.getElementById("pearPrice").disabled = false;
+        document.getElementById("blockchainVolume").disabled = false;
       }
     }
 
     // Perform calculations
     function calculate() {
-      const ethPriceInput = parseFloat(document.getElementById('ethPrice').value) || ethPrice;
-      const pearPriceInput = parseFloat(document.getElementById('pearPrice').value) || pearPrice;
-      const blockchainVolumeInput = parseFloat(document.getElementById('blockchainVolume').value);
-      const captureRate = parseFloat(document.getElementById('captureRate').value) / 100;
-      const stakerShare = parseFloat(document.getElementById('stakerShare').value) / 100;
-      const tradingFee = parseFloat(document.getElementById('tradingFee').value) / 100;
-      const rebate = parseFloat(document.getElementById('rebate').value) / 100;
-      const stakedPEAR = parseFloat(document.getElementById('stakedPEAR').value) * 1_000_000;
+      const ethPriceInput = parseFloat(document.getElementById("ethPrice").value) || ethPrice;
+      const pearPriceInput = parseFloat(document.getElementById("pearPrice").value) || pearPrice;
+      const blockchainVolumeInput = parseFloat(document.getElementById("blockchainVolume").value);
+      const captureRate = parseFloat(document.getElementById("captureRate").value) / 100;
+      const rebate = parseFloat(document.getElementById("rebate").value) / 100;
+      const stakedPEAR = parseFloat(document.getElementById("stakedPEAR").value) * 1_000_000;
 
       const capturedVolume = blockchainVolumeInput * captureRate;
-      const grossFees = capturedVolume * tradingFee;
+      const grossFees = capturedVolume * 0.0026; // Fixed trading fee
       const netFees = grossFees * (1 - rebate);
-      const stakerRevenue = netFees * stakerShare;
+      const stakerRevenue = netFees * 0.8; // 80% fixed staker share
 
       const dailyEthPayout = stakerRevenue / ethPriceInput;
       const annualEthPerPear = (dailyEthPayout / stakedPEAR) * 365;
       const totalAnnualEth = dailyEthPayout * 365;
 
-      document.getElementById('output').innerHTML = `
+      document.getElementById("output").innerHTML = `
         <p><strong>Gross Fees:</strong> $${grossFees.toFixed(2)}</p>
         <p><strong>Net Fees (After Rebate):</strong> $${netFees.toFixed(2)}</p>
         <p><strong>Staker Revenue:</strong> $${stakerRevenue.toFixed(2)}</p>
@@ -240,7 +252,7 @@
     }
 
     // Fetch data on page load
-    fetchPrices();
+    fetchLiveData();
   </script>
 </body>
 </html>
