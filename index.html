@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PEARCULATOR 9000™</title>
   <style>
-    /* General Styling */
     body {
       font-family: 'Arial', sans-serif;
       background-color: #0d1117; /* Dark background */
@@ -34,14 +33,6 @@
       max-width: 800px;
       margin: 10px auto;
     }
-    .scenario {
-      text-align: center;
-      margin: 20px auto;
-    }
-    .scenario p {
-      font-size: 14px;
-      margin: 5px auto;
-    }
     .container {
       max-width: 900px;
       margin: 20px auto;
@@ -62,7 +53,7 @@
       font-weight: bold;
       color: #c9d1d9;
     }
-    input[type="range"], input[type="number"], input[type="text"] {
+    input[type="number"], input[type="text"] {
       flex: 2;
       padding: 8px;
       border-radius: 8px;
@@ -70,20 +61,6 @@
       background-color: #0d1117;
       color: #c9d1d9;
       font-size: 14px;
-    }
-    input[type="range"] {
-      width: 100%;
-      height: 8px;
-      background: linear-gradient(90deg, #10b981, #16c9b0); /* Gradient */
-      outline: none;
-    }
-    input[type="range"]::-webkit-slider-thumb {
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: #10b981; /* Thumb color */
-      cursor: pointer;
-      box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
     }
     input:focus {
       outline: none;
@@ -105,17 +82,6 @@
     button:hover {
       background: linear-gradient(90deg, #16c9b0, #10b981); /* Reverse gradient */
     }
-    .preset-buttons {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-    .preset-buttons button {
-      flex: 1;
-      padding: 10px;
-      font-size: 14px;
-    }
     .result {
       margin-top: 20px;
       padding: 15px;
@@ -127,85 +93,25 @@
     .result strong {
       color: #ffffff; /* White for strong emphasis */
     }
-    footer {
-      text-align: center;
-      margin: 40px 0 20px;
-      font-size: 14px;
-      color: #c9d1d9; /* Subtle gray */
-    }
-    footer a {
-      color: #10b981; /* Pear green */
-      text-decoration: none;
-      margin: 0 10px;
-    }
-    footer a:hover {
-      color: #10b981; /* No hover effect to avoid color change */
-      text-decoration: underline; /* Subtle underline on hover */
-    }
   </style>
 </head>
 <body>
   <h1>PEARCULATOR 9000™</h1>
 
-  <!-- Brief Scenario Descriptions -->
-  <div class="scenario">
-    <p><strong>Bearish Scenario:</strong> Only 0.001% of TradFi pair trading moves to blockchain.</p>
-    <p><strong>Neutral Scenario:</strong> Approximately 0.005% of TradFi pair trading transitions to blockchain.</p>
-    <p><strong>Bullish Scenario:</strong> Optimistically, 0.01% of TradFi pair trading is captured on-chain.</p>
+  <!-- Live Prices Section -->
+  <div class="container">
+    <h2>Live Prices</h2>
+    <p><strong>Ethereum Price:</strong> <span id="ethPrice">Loading...</span> USD</p>
+    <p><strong>PEAR Price:</strong> <span id="pearPrice">Loading...</span> USD</p>
   </div>
 
-  <!-- Calculator Section -->
+  <!-- Input Section -->
   <div class="container">
-    <h2>Market Capture</h2>
-    <div class="preset-buttons">
-      <button onclick="applyBearish()">Bearish Scenario</button>
-      <button onclick="applyNeutral()">Neutral Scenario</button>
-      <button onclick="applyBullish()">Bullish Scenario</button>
-    </div>
-
+    <h2>Calculator Inputs</h2>
     <div class="input-row">
-      <label for="equityCapture">Equity Market Capture %</label>
-      <input type="range" id="equityCapture" min="0" max="100" step="0.001" value="0.001">
-      <input type="number" id="equityCaptureValue" value="0.001" oninput="syncSlider('equityCapture')">
+      <label for="stakedPEAR">Total PEAR Staked (millions):</label>
+      <input type="number" id="stakedPEAR" value="72" step="1">
     </div>
-    <div class="input-row">
-      <label for="forexCapture">Forex Market Capture %</label>
-      <input type="range" id="forexCapture" min="0" max="100" step="0.001" value="0.001">
-      <input type="number" id="forexCaptureValue" value="0.001" oninput="syncSlider('forexCapture')">
-    </div>
-    <div class="input-row">
-      <label for="commodityCapture">Commodities Market Capture %</label>
-      <input type="range" id="commodityCapture" min="0" max="100" step="0.001" value="0.001">
-      <input type="number" id="commodityCaptureValue" value="0.001" oninput="syncSlider('commodityCapture')">
-    </div>
-    <div class="input-row">
-      <label for="rwaCapture">RWAs Market Capture %</label>
-      <input type="range" id="rwaCapture" min="0" max="100" step="0.001" value="0.001">
-      <input type="number" id="rwaCaptureValue" value="0.001" oninput="syncSlider('rwaCapture')">
-    </div>
-
-    <h2>Tokenomics</h2>
-    <div class="input-row">
-      <label for="tradingFee">Trading Fee (%)</label>
-      <input type="number" id="tradingFee" value="0.26">
-    </div>
-    <div class="input-row">
-      <label for="rebate">Rebate (%)</label>
-      <input type="number" id="rebate" value="10">
-    </div>
-    <div class="input-row">
-      <label for="stakerShare">Stakers’ Share (%)</label>
-      <input type="number" id="stakerShare" value="80">
-    </div>
-    <div class="input-row">
-      <label for="pearPrice">PEAR Price (USD)</label>
-      <input type="number" id="pearPrice" value="0.50">
-    </div>
-    <div class="input-row">
-      <label for="stakedPEAR">PEAR Staked</label>
-      <input type="number" id="stakedPEAR" value="1000">
-    </div>
-
     <button onclick="calculate()">Calculate</button>
   </div>
 
@@ -216,71 +122,67 @@
 
   <!-- Footer -->
   <footer>
-    Made by <a href="https://twitter.com/0xRemco" target="_blank">0xRemco</a> | 
-    <a href="https://twitter.com/pear_x" target="_blank">Pear X</a> | 
-    <a href="https://discord.com/invite/pear" target="_blank">Discord</a> | 
-    <a href="https://docs.pearprotocol.io" target="_blank">Docs</a>
+    <p>Made by <a href="https://twitter.com/0xRemco" target="_blank">0xRemco</a></p>
   </footer>
 
   <script>
-    function applyBearish() {
-      setPresetValues(0.001, 0.001, 0.001, 0.001);
+    let ethPrice = 0;
+    let pearPrice = 0;
+
+    // Fetch live prices
+    async function fetchPrices() {
+      const response = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=ethereum,pear-protocol&vs_currencies=usd");
+      const data = await response.json();
+      ethPrice = data.ethereum.usd;
+      pearPrice = data["pear-protocol"].usd;
+
+      document.getElementById("ethPrice").innerText = ethPrice.toFixed(2);
+      document.getElementById("pearPrice").innerText = pearPrice.toFixed(2);
     }
 
-    function applyNeutral() {
-      setPresetValues(0.005, 0.005, 0.005, 0.005);
-    }
-
-    function applyBullish() {
-      setPresetValues(0.01, 0.01, 0.01, 0.01);
-    }
-
-    function setPresetValues(equity, forex, commodity, rwa) {
-      document.getElementById("equityCapture").value = equity;
-      document.getElementById("forexCapture").value = forex;
-      document.getElementById("commodityCapture").value = commodity;
-      document.getElementById("rwaCapture").value = rwa;
-
-      document.getElementById("equityCaptureValue").value = equity;
-      document.getElementById("forexCaptureValue").value = forex;
-      document.getElementById("commodityCaptureValue").value = commodity;
-      document.getElementById("rwaCaptureValue").value = rwa;
-    }
-
-    function syncSlider(field) {
-      const slider = document.getElementById(field);
-      const valueField = document.getElementById(field + "Value");
-      slider.value = valueField.value;
-    }
-
+    // Perform calculations
     function calculate() {
-      const equityCapture = parseFloat(document.getElementById("equityCapture").value) / 100;
-      const forexCapture = parseFloat(document.getElementById("forexCapture").value) / 100;
-      const commodityCapture = parseFloat(document.getElementById("commodityCapture").value) / 100;
-      const rwaCapture = parseFloat(document.getElementById("rwaCapture").value) / 100;
-      const tradingFee = parseFloat(document.getElementById("tradingFee").value) / 100;
-      const rebate = parseFloat(document.getElementById("rebate").value) / 100;
-      const stakerShare = parseFloat(document.getElementById("stakerShare").value) / 100;
-      const pearPrice = parseFloat(document.getElementById("pearPrice").value);
-      const stakedPEAR = parseFloat(document.getElementById("stakedPEAR").value);
+      const stakedPEAR = parseFloat(document.getElementById("stakedPEAR").value) * 1_000_000; // Convert millions to full numbers
 
-      const totalCapturedVolume = (equityCapture + forexCapture + commodityCapture + rwaCapture) * 100; // Dummy logic
-      const grossFees = totalCapturedVolume * tradingFee;
+      // Protocol Parameters
+      const tradingFee = 0.0026; // 0.26%
+      const rebate = 0.10; // 10%
+      const stakerShare = 0.80; // 80%
+
+      // Market Assumption
+      const capturedVolume = 25.55e9; // Example: $25.55 billion annually
+
+      // Gross Fees
+      const grossFees = capturedVolume * tradingFee;
+
+      // Net Fees After Rebate
       const netFees = grossFees * (1 - rebate);
+
+      // Staker Revenue
       const stakerRevenue = netFees * stakerShare;
-      const dailyEthPayout = stakerRevenue / pearPrice;
+
+      // Daily ETH Payout
+      const dailyEthPayout = stakerRevenue / ethPrice;
+
+      // Annual ETH Per PEAR
       const annualEthPerPear = (dailyEthPayout / stakedPEAR) * 365;
 
+      // Total Annual ETH Earned by PEAR
+      const annualEthByPEAR = dailyEthPayout * 365;
+
+      // Display Results
       document.getElementById("output").innerHTML = `
-        <p><strong>Total Market Capture:</strong> ${totalCapturedVolume.toFixed(2)}%</p>
         <p><strong>Gross Fees:</strong> $${grossFees.toFixed(2)}</p>
         <p><strong>Net Fees (After Rebate):</strong> $${netFees.toFixed(2)}</p>
         <p><strong>Staker Revenue:</strong> $${stakerRevenue.toFixed(2)}</p>
-        <p><strong>Daily ETH Payout:</strong> ${(dailyEthPayout / pearPrice).toFixed(8)} ETH</p>
+        <p><strong>Daily ETH Payout:</strong> ${dailyEthPayout.toFixed(8)} ETH</p>
         <p><strong>Annual ETH Per PEAR:</strong> ${annualEthPerPear.toFixed(8)} ETH</p>
+        <p><strong>Total Annual ETH Earned by PEAR:</strong> ${annualEthByPEAR.toFixed(2)} ETH</p>
       `;
     }
+
+    // Fetch prices on page load
+    fetchPrices();
   </script>
 </body>
 </html>
-
