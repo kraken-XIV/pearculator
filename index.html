@@ -5,83 +5,232 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PEARCULATOR 9000™</title>
   <style>
-    /* Existing styles omitted for brevity */
-    @media (max-width: 768px) {
-      .container {
-        padding: 5px;
-      }
-      .input-row {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      input, select, button {
-        width: 100%;
-      }
+    /* Original styles with responsive adjustments */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #0d1117;
+      color: #c9d1d9;
+      margin: 0;
+      padding: 0;
     }
-    button:focus {
-      outline: 2px solid #10b981;
+    h1 {
+      font-size: 32px;
+      color: #ffffff;
+      margin-top: 10px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    h1 img {
+      width: 40px;
+      height: 40px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 10px auto;
+      padding: 10px;
+      background-color: #161b22;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    .input-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    label {
+      flex: 1;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    input[type="number"], select {
+      flex: 1;
+      padding: 5px;
+      border-radius: 8px;
+      border: 1px solid #30363d;
+      background-color: #0d1117;
+      color: #c9d1d9;
+      font-size: 12px;
+    }
+    button {
+      width: auto;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #fff;
+      background: linear-gradient(90deg, #10b981, #16c9b0);
+      transition: all 0.3s ease;
+    }
+    button:hover {
+      background: linear-gradient(90deg, #16c9b0, #10b981);
+    }
+    .result {
+      margin-top: 15px;
+      padding: 10px;
+      background: #0d9f6e;
+      color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      font-size: 12px;
+    }
+    footer {
+      text-align: center;
+      margin: 20px 0 10px;
+      font-size: 12px;
+      color: #c9d1d9;
+    }
+    footer a {
+      color: #10b981;
+      text-decoration: none;
+      margin: 0 5px;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+    .popup {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: #ff4d4d;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+      font-size: 12px;
+      display: none;
     }
   </style>
 </head>
 <body>
-  <!-- Existing body content omitted for brevity -->
+  <h1>
+    <img src="https://pear.garden/icons/pear.svg" alt="Pear Logo">
+    PEARCULATOR 9000™
+  </h1>
+
+  <div class="popup" id="errorPopup">Data could not be fetched automatically; fill in the fields manually</div>
+
+  <div class="container">
+    <h2>Live Prices</h2>
+    <div class="input-row">
+      <label for="ethPrice">Ethereum Price (USD):</label>
+      <input type="number" id="ethPrice" value="Loading..." disabled>
+    </div>
+    <div class="input-row">
+      <label for="pearPrice">PEAR Price (USD):</label>
+      <input type="number" id="pearPrice" value="Loading..." disabled>
+    </div>
+  </div>
+
+  <div class="container">
+    <h2>Total On-Chain Volume</h2>
+    <div class="input-row">
+      <label for="blockchainVolume">Total Volume (USD):</label>
+      <input type="number" id="blockchainVolume" placeholder="Enter volume manually">
+    </div>
+  </div>
+
+  <div class="container">
+    <h2>Inputs</h2>
+    <div class="input-row">
+      <label for="captureRate">Capture Rate %:</label>
+      <input type="number" id="captureRate" value="0.001" step="0.001">
+    </div>
+    <div class="input-row">
+      <label for="rebate">Average Rebate (%):</label>
+      <select id="rebate">
+        <option value="5">5%</option>
+        <option value="10" selected>10%</option>
+        <option value="15">15%</option>
+        <option value="18">18%</option>
+      </select>
+    </div>
+    <div class="input-row">
+      <label for="stakedPEAR">Total PEAR Staked (millions):</label>
+      <input type="number" id="stakedPEAR" value="72" step="1">
+    </div>
+    <div class="input-row">
+      <label for="avgAPY">Average APY (%):</label>
+      <input type="number" id="avgAPY" placeholder="Enter APY" value="50" step="1">
+    </div>
+    <button onclick="calculate()">Calculate</button>
+  </div>
+
+  <div class="container result" id="output">
+    <p><strong>Results will appear here after calculation.</strong></p>
+  </div>
+
+  <footer>
+    <p>
+      Made by <a href="https://twitter.com/0xremco" target="_blank">Twitter</a> |
+      <a href="https://discord.gg/pearprotocol" target="_blank">Discord</a> |
+      <a href="https://docs.pearprotocol.io" target="_blank">Docs</a>
+    </p>
+  </footer>
+
   <script>
     let ethPrice = 0;
     let pearPrice = 0;
 
-    // Show error popup with improved visibility
-    function showErrorPopup(message = "Data could not be fetched; fill in fields manually") {
-      const popup = document.getElementById('errorPopup');
+    document.addEventListener("DOMContentLoaded", () => {
+      fetchLiveData();
+    });
+
+    function showErrorPopup(message = "Error occurred.") {
+      const popup = document.getElementById("errorPopup");
+      if (!popup) {
+        console.error("Popup element is missing!");
+        return;
+      }
       popup.textContent = message;
-      popup.style.display = 'block';
-      setTimeout(() => popup.style.display = 'none', 5000);
+      popup.style.display = "block";
+      setTimeout(() => (popup.style.display = "none"), 5000);
     }
 
-    // Fetch live prices with better error handling
     async function fetchLiveData() {
       try {
         const response = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=ethereum,pear-protocol&vs_currencies=usd");
-        if (!response.ok) throw new Error(`API returned status: ${response.status}`);
+        if (!response.ok) {
+          throw new Error(`HTTP status ${response.status}`);
+        }
         const data = await response.json();
 
-        if (!data.ethereum || !data["pear-protocol"]) throw new Error("Malformed data received");
+        const ethPriceInput = document.getElementById("ethPrice");
+        const pearPriceInput = document.getElementById("pearPrice");
 
-        ethPrice = data.ethereum.usd;
-        pearPrice = data["pear-protocol"].usd;
+        if (!ethPriceInput || !pearPriceInput) {
+          console.error("Price input elements are missing in the DOM.");
+          return;
+        }
 
-        document.getElementById("ethPrice").value = ethPrice.toFixed(2);
-        document.getElementById("pearPrice").value = pearPrice.toFixed(2);
+        ethPrice = data.ethereum.usd || 0;
+        pearPrice = data["pear-protocol"].usd || 0;
+
+        ethPriceInput.value = ethPrice.toFixed(2);
+        pearPriceInput.value = pearPrice.toFixed(2);
       } catch (error) {
-        console.error('Error fetching live data:', error);
+        console.error("Error fetching live data:", error);
         showErrorPopup("Unable to fetch live prices. Enter manually.");
-        document.getElementById("ethPrice").disabled = false;
-        document.getElementById("pearPrice").disabled = false;
       }
     }
 
-    // Helper function to get input values safely
-    function getInputValue(id, fallback = 0) {
-      const value = parseFloat(document.getElementById(id).value);
-      return isNaN(value) ? fallback : value;
-    }
-
-    // Perform calculations with better validation
     function calculate() {
-      const ethPriceInput = getInputValue("ethPrice", ethPrice);
-      const pearPriceInput = getInputValue("pearPrice", pearPrice);
-      const blockchainVolumeInput = getInputValue("blockchainVolume");
-      const captureRate = getInputValue("captureRate") / 100;
-      const rebate = getInputValue("rebate") / 100;
-      const stakedPEAR = getInputValue("stakedPEAR") * 1_000_000;
-      const avgAPY = getInputValue("avgAPY") / 100;
-
-      if (blockchainVolumeInput <= 0 || captureRate <= 0 || stakedPEAR <= 0 || avgAPY <= 0) {
-        showErrorPopup("Please fill in all required fields with valid values.");
-        return;
-      }
+      const ethPriceInput = parseFloat(document.getElementById("ethPrice").value) || ethPrice;
+      const pearPriceInput = parseFloat(document.getElementById("pearPrice").value) || pearPrice;
+      const blockchainVolumeInput = parseFloat(document.getElementById("blockchainVolume").value) || 0;
+      const captureRate = parseFloat(document.getElementById("captureRate").value) / 100 || 0;
+      const rebate = parseFloat(document.getElementById("rebate").value) / 100 || 0;
+      const stakedPEAR = parseFloat(document.getElementById("stakedPEAR").value) * 1_000_000 || 0;
+      const avgAPY = parseFloat(document.getElementById("avgAPY").value) / 100 || 0;
 
       const capturedVolume = blockchainVolumeInput * captureRate;
-      const grossFees = capturedVolume * 0.0026;
+      const grossFees = capturedVolume * 0.0026; // Fixed trading fee
       const netFees = grossFees * (1 - rebate);
       const stakerRevenue = netFees * 0.8;
 
@@ -98,11 +247,6 @@
         <p><strong>Total Annual ETH Earned by PEAR:</strong> ${totalAnnualEth.toFixed(2)} ETH</p>
       `;
     }
-
-    // Fetch data on page load with a loading spinner
-    document.addEventListener("DOMContentLoaded", () => {
-      fetchLiveData();
-    });
   </script>
 </body>
 </html>
