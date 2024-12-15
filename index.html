@@ -7,8 +7,8 @@
   <style>
     body {
       font-family: 'Arial', sans-serif;
-      background-color: #0d1117; /* Dark background */
-      color: #c9d1d9; /* Subtle light gray text */
+      background-color: #0d1117;
+      color: #c9d1d9;
       margin: 0;
       padding: 0;
     }
@@ -18,24 +18,24 @@
     }
     h1 {
       font-size: 32px;
-      color: #ffffff; /* White title */
+      color: #ffffff;
       margin-top: 20px;
     }
     h2 {
       font-size: 20px;
-      color: #e5e7eb; /* Subtle white */
+      color: #e5e7eb;
       margin-bottom: 10px;
     }
     p {
       font-size: 14px;
-      color: #c9d1d9;
       margin: 5px auto;
+      color: #c9d1d9;
     }
     .container {
       max-width: 900px;
       margin: 20px auto;
       padding: 20px;
-      background-color: #161b22; /* Card background */
+      background-color: #161b22;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
@@ -49,20 +49,14 @@
       flex: 1;
       font-size: 14px;
       font-weight: bold;
-      color: #c9d1d9;
     }
-    input[type="number"], input[type="text"] {
+    input[type="number"] {
       flex: 2;
       padding: 8px;
       border-radius: 8px;
-      border: 1px solid #30363d; /* Matches Pear aesthetic */
+      border: 1px solid #30363d;
       background-color: #0d1117;
       color: #c9d1d9;
-      font-size: 14px;
-    }
-    input:focus {
-      outline: none;
-      border-color: #10b981; /* Highlight on focus */
     }
     button {
       width: 100%;
@@ -74,33 +68,22 @@
       font-weight: bold;
       cursor: pointer;
       color: #fff;
-      background: linear-gradient(90deg, #10b981, #16c9b0); /* Gradient button */
+      background: linear-gradient(90deg, #10b981, #16c9b0);
       transition: all 0.3s ease;
     }
     button:hover {
-      background: linear-gradient(90deg, #16c9b0, #10b981); /* Reverse gradient */
-    }
-    .preset-buttons {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-    .preset-buttons button {
-      flex: 1;
-      padding: 10px;
-      font-size: 14px;
+      background: linear-gradient(90deg, #16c9b0, #10b981);
     }
     .result {
       margin-top: 20px;
       padding: 15px;
-      background: #0d9f6e; /* Green popup background */
-      color: #ffffff; /* White text */
+      background: #0d9f6e;
+      color: #ffffff;
       border-radius: 8px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     }
     .result strong {
-      color: #ffffff; /* White for strong emphasis */
+      color: #ffffff;
     }
   </style>
 </head>
@@ -110,9 +93,9 @@
   <!-- Scenario Descriptions -->
   <div class="container">
     <h2>Scenarios</h2>
-    <p><strong>Bearish Scenario:</strong> Only 0.001% of TradFi pair trading moves to blockchain.</p>
-    <p><strong>Neutral Scenario:</strong> Approximately 0.005% of TradFi pair trading transitions to blockchain.</p>
-    <p><strong>Bullish Scenario:</strong> Optimistically, 0.01% of TradFi pair trading is captured on-chain.</p>
+    <p><strong>Bearish Scenario:</strong> Capture 0.001% of total blockchain trading volume.</p>
+    <p><strong>Neutral Scenario:</strong> Capture 0.005% of total blockchain trading volume.</p>
+    <p><strong>Bullish Scenario:</strong> Capture 0.01% of total blockchain trading volume.</p>
   </div>
 
   <!-- Live Prices Section -->
@@ -125,30 +108,17 @@
   <!-- Input Section -->
   <div class="container">
     <h2>Inputs</h2>
-    <div class="preset-buttons">
-      <button onclick="applyScenario(0.001)">Bearish Scenario</button>
-      <button onclick="applyScenario(0.005)">Neutral Scenario</button>
-      <button onclick="applyScenario(0.01)">Bullish Scenario</button>
+    <div class="input-row">
+      <label for="blockchainVolume">Total Blockchain Volume (Annual in USD):</label>
+      <input type="number" id="blockchainVolume" value="2555000000000" step="1">
+    </div>
+    <div class="input-row">
+      <label for="captureRate">Capture Rate %:</label>
+      <input type="number" id="captureRate" value="0.001" step="0.001">
     </div>
     <div class="input-row">
       <label for="stakedPEAR">Total PEAR Staked (millions):</label>
       <input type="number" id="stakedPEAR" value="72" step="1">
-    </div>
-    <div class="input-row">
-      <label for="marketCapture">Market Capture %:</label>
-      <input type="number" id="marketCapture" value="0.001" step="0.001">
-    </div>
-    <div class="input-row">
-      <label for="tradingFee">Trading Fee %:</label>
-      <input type="number" id="tradingFee" value="0.26" step="0.01">
-    </div>
-    <div class="input-row">
-      <label for="rebate">Rebate %:</label>
-      <input type="number" id="rebate" value="10" step="1">
-    </div>
-    <div class="input-row">
-      <label for="stakerShare">Staker Share %:</label>
-      <input type="number" id="stakerShare" value="80" step="1">
     </div>
     <button onclick="calculate()">Calculate</button>
   </div>
@@ -158,7 +128,6 @@
     <p><strong>Results will appear here after calculation.</strong></p>
   </div>
 
-  <!-- Footer -->
   <footer>
     <p>Made by <a href="https://twitter.com/0xRemco" target="_blank">0xRemco</a></p>
   </footer>
@@ -178,40 +147,27 @@
       document.getElementById("pearPrice").innerText = pearPrice.toFixed(2);
     }
 
-    // Apply preset scenarios
-    function applyScenario(capture) {
-      document.getElementById("marketCapture").value = capture;
-    }
-
     // Perform calculations
     function calculate() {
-      const stakedPEAR = parseFloat(document.getElementById("stakedPEAR").value) * 1_000_000; // Convert millions to full numbers
-      const marketCapture = parseFloat(document.getElementById("marketCapture").value) / 100;
-      const tradingFee = parseFloat(document.getElementById("tradingFee").value) / 100;
-      const rebate = parseFloat(document.getElementById("rebate").value) / 100;
-      const stakerShare = parseFloat(document.getElementById("stakerShare").value) / 100;
+      const blockchainVolume = parseFloat(document.getElementById("blockchainVolume").value);
+      const captureRate = parseFloat(document.getElementById("captureRate").value) / 100;
+      const stakedPEAR = parseFloat(document.getElementById("stakedPEAR").value) * 1_000_000;
 
-      // Market Assumption
-      const globalVolume = 2_555_000_000_000; // $2.555 trillion annually
-      const capturedVolume = globalVolume * marketCapture;
+      // Protocol Parameters
+      const tradingFee = 0.0026; // 0.26%
+      const rebate = 0.10; // 10%
+      const stakerShare = 0.80; // 80%
 
-      // Gross Fees
+      // Gross and Net Fees
+      const capturedVolume = blockchainVolume * captureRate;
       const grossFees = capturedVolume * tradingFee;
-
-      // Net Fees After Rebate
       const netFees = grossFees * (1 - rebate);
-
-      // Staker Revenue
       const stakerRevenue = netFees * stakerShare;
 
-      // Daily ETH Payout
+      // Daily and Annual ETH
       const dailyEthPayout = stakerRevenue / ethPrice;
-
-      // Annual ETH Per PEAR
       const annualEthPerPear = (dailyEthPayout / stakedPEAR) * 365;
-
-      // Total Annual ETH Earned by PEAR
-      const annualEthByPEAR = dailyEthPayout * 365;
+      const totalAnnualEth = dailyEthPayout * 365;
 
       // Display Results
       document.getElementById("output").innerHTML = `
@@ -220,7 +176,7 @@
         <p><strong>Staker Revenue:</strong> $${stakerRevenue.toFixed(2)}</p>
         <p><strong>Daily ETH Payout:</strong> ${dailyEthPayout.toFixed(8)} ETH</p>
         <p><strong>Annual ETH Per PEAR:</strong> ${annualEthPerPear.toFixed(8)} ETH</p>
-        <p><strong>Total Annual ETH Earned by PEAR:</strong> ${annualEthByPEAR.toFixed(2)} ETH</p>
+        <p><strong>Total Annual ETH Earned by PEAR:</strong> ${totalAnnualEth.toFixed(2)} ETH</p>
       `;
     }
 
