@@ -12,14 +12,19 @@
       margin: 0;
       padding: 0;
     }
-    h1, h2, p {
-      text-align: center;
-      margin: 10px auto;
-    }
     h1 {
       font-size: 32px;
       color: #ffffff;
       margin-top: 20px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    h1 img {
+      width: 40px;
+      height: 40px;
     }
     .container {
       max-width: 900px;
@@ -102,7 +107,10 @@
   </style>
 </head>
 <body>
-  <h1>PEARCULATOR 9000™</h1>
+  <h1>
+    <img src="https://pear.garden/icons/pear.svg" alt="Pear Logo">
+    PEARCULATOR 9000™
+  </h1>
 
   <div class="popup" id="errorPopup">Data could not be fetched automatically; fill in the fields manually</div>
 
@@ -122,7 +130,7 @@
     <h2>Combined Trading Volume</h2>
     <div class="input-row">
       <label for="blockchainVolume">Total Combined Volume (USD):</label>
-      <input type="number" id="blockchainVolume" value="Loading..." disabled>
+      <input type="number" id="blockchainVolume" value="500000000" step="1000000">
     </div>
   </div>
 
@@ -157,14 +165,14 @@
 
   <footer>
     <p>
-      Made by <a href="https://twitter.com/pear_protocol" target="_blank">Pear Protocol</a> |
+      Made by <a href="https://twitter.com/0xremco" target="_blank">0xremco/a> |
+	  <a href="https://twitter.com/pear_protocol" target="_blank">Pear Protocol</a> |
       <a href="https://discord.gg/pearprotocol" target="_blank">Discord</a> |
       <a href="https://docs.pearprotocol.io" target="_blank">Docs</a>
     </p>
   </footer>
 
   <script>
-    const exchangeIDs = ['gmx', 'vertex-protocol', 'hyper-protocol', 'symm'];
     let ethPrice = 0;
     let pearPrice = 0;
 
@@ -175,23 +183,10 @@
       setTimeout(() => popup.style.display = 'none', 5000);
     }
 
-    // Enable manual input
-    function enableManualInput() {
-      document.getElementById('ethPrice').disabled = false;
-      document.getElementById('pearPrice').disabled = false;
-      document.getElementById('blockchainVolume').disabled = false;
-      document.getElementById('ethPrice').value = '';
-      document.getElementById('pearPrice').value = '';
-      document.getElementById('blockchainVolume').value = '';
-    }
-
     // Fetch live prices
     async function fetchPrices() {
       try {
-        const response = await Promise.race([
-          fetch("https://api.coingecko.com/api/v3/simple/price?ids=ethereum,pear-protocol&vs_currencies=usd"),
-          new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 2000))
-        ]);
+        const response = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=ethereum,pear-protocol&vs_currencies=usd");
         const data = await response.json();
         ethPrice = data.ethereum.usd;
         pearPrice = data["pear-protocol"].usd;
@@ -200,36 +195,13 @@
       } catch (error) {
         console.error('Error fetching prices:', error);
         showErrorPopup();
-        enableManualInput();
-      }
-    }
-
-    // Fetch combined volume
-    async function fetchCombinedVolume() {
-      try {
-        const responses = await Promise.race([
-          Promise.all(exchangeIDs.map(id => fetch(`https://api.coingecko.com/api/v3/exchanges/${id}/tickers`))),
-          new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 2000))
-        ]);
-        const data = await Promise.all(responses.map(res => res.json()));
-        let totalVolume = 0;
-        data.forEach(exchange => {
-          if (exchange.tickers) {
-            totalVolume += exchange.tickers.reduce(
-              (sum, ticker) => sum + (ticker.converted_volume.usd || 0), 0
-            );
-          }
-        });
-        document.getElementById('blockchainVolume').value = totalVolume.toFixed(2);
-      } catch (error) {
-        console.error('Error fetching combined volume:', error);
-        showErrorPopup();
-        enableManualInput();
+        document.getElementById('ethPrice').disabled = false;
+        document.getElementById('pearPrice').disabled = false;
       }
     }
 
     // Perform calculations
-    async function calculate() {
+    function calculate() {
       const ethPriceInput = parseFloat(document.getElementById('ethPrice').value) || ethPrice;
       const pearPriceInput = parseFloat(document.getElementById('pearPrice').value) || pearPrice;
       const blockchainVolumeInput = parseFloat(document.getElementById('blockchainVolume').value);
@@ -239,28 +211,4 @@
       const rebate = parseFloat(document.getElementById('rebate').value) / 100;
       const stakedPEAR = parseFloat(document.getElementById('stakedPEAR').value) * 1_000_000;
 
-      const capturedVolume = blockchainVolumeInput * captureRate;
-      const grossFees = capturedVolume * tradingFee;
-      const netFees = grossFees * (1 - rebate);
-      const stakerRevenue = netFees * stakerShare;
-
-      const dailyEthPayout = stakerRevenue / ethPriceInput;
-      const annualEthPerPear = (dailyEthPayout / stakedPEAR) * 365;
-      const totalAnnualEth = dailyEthPayout * 365;
-
-      document.getElementById('output').innerHTML = `
-        <p><strong>Gross Fees:</strong> $${grossFees.toFixed(2)}</p>
-        <p><strong>Net Fees (After Rebate):</strong> $${netFees.toFixed(2)}</p>
-        <p><strong>Staker Revenue:</strong> $${stakerRevenue.toFixed(2)}</p>
-        <p><strong>Daily ETH Payout:</strong> ${dailyEthPayout.toFixed(8)} ETH</p>
-        <p><strong>Annual ETH Per PEAR:</strong> ${annualEthPerPear.toFixed(8)} ETH</p>
-        <p><strong>Total Annual ETH Earned by PEAR:</strong> ${totalAnnualEth.toFixed(2)} ETH</p>
-      `;
-    }
-
-    // Fetch data on page load
-    fetchPrices();
-    fetchCombinedVolume();
-  </script>
-</body>
-</html>
+      const capturedVolume = blockchain
