@@ -165,8 +165,8 @@
 
   <footer>
     <p>
-      Made by <a href="https://twitter.com/0xremco" target="_blank">0xremco/a> |
-	  <a href="https://twitter.com/pear_protocol" target="_blank">Pear Protocol</a> |
+      Made by <a href="https://twitter.com/0xremco" target="_blank">0xremco</a> |
+      <a href="https://twitter.com/pear_protocol" target="_blank">Pear Protocol</a> |
       <a href="https://discord.gg/pearprotocol" target="_blank">Discord</a> |
       <a href="https://docs.pearprotocol.io" target="_blank">Docs</a>
     </p>
@@ -211,4 +211,27 @@
       const rebate = parseFloat(document.getElementById('rebate').value) / 100;
       const stakedPEAR = parseFloat(document.getElementById('stakedPEAR').value) * 1_000_000;
 
-      const capturedVolume = blockchain
+      const capturedVolume = blockchainVolumeInput * captureRate;
+      const grossFees = capturedVolume * tradingFee;
+      const netFees = grossFees * (1 - rebate);
+      const stakerRevenue = netFees * stakerShare;
+
+      const dailyEthPayout = stakerRevenue / ethPriceInput;
+      const annualEthPerPear = (dailyEthPayout / stakedPEAR) * 365;
+      const totalAnnualEth = dailyEthPayout * 365;
+
+      document.getElementById('output').innerHTML = `
+        <p><strong>Gross Fees:</strong> $${grossFees.toFixed(2)}</p>
+        <p><strong>Net Fees (After Rebate):</strong> $${netFees.toFixed(2)}</p>
+        <p><strong>Staker Revenue:</strong> $${stakerRevenue.toFixed(2)}</p>
+        <p><strong>Daily ETH Payout:</strong> ${dailyEthPayout.toFixed(8)} ETH</p>
+        <p><strong>Annual ETH Per PEAR:</strong> ${annualEthPerPear.toFixed(8)} ETH</p>
+        <p><strong>Total Annual ETH Earned by PEAR:</strong> ${totalAnnualEth.toFixed(2)} ETH</p>
+      `;
+    }
+
+    // Fetch data on page load
+    fetchPrices();
+  </script>
+</body>
+</html>
