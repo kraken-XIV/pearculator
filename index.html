@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,16 +13,27 @@
       background-color: #f4f4f9;
       color: #333;
     }
-    h1, h2 {
+    h1 {
       text-align: center;
     }
     .container {
-      max-width: 800px;
+      max-width: 1200px;
       margin: 0 auto;
       padding: 20px;
       background: #fff;
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .box {
+      flex: 1;
+      min-width: 300px;
+      padding: 20px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
     }
     label {
       display: block;
@@ -49,7 +62,7 @@
       background: #0056b3;
     }
     .result {
-      margin: 20px 0;
+      margin-top: 20px;
       padding: 10px;
       background: #e8f5e9;
       border: 1px solid #a5d6a7;
@@ -63,65 +76,71 @@
 <body>
   <h1>Pear Protocol Earnings Calculator</h1>
   <div class="container">
-    <h2>Market Parameters</h2>
-    <label for="equityVolume">Equity Daily Trading Volume (USD):</label>
-    <input type="number" id="equityVolume" value="500000000000">
+    <!-- Left: Market Parameters -->
+    <div class="box">
+      <h2>Market Parameters</h2>
+      <label for="equityVolume">Equity Daily Trading Volume (USD):</label>
+      <input type="number" id="equityVolume" value="500000000000">
 
-    <label for="equityCapture">Market Capture % (Equity):</label>
-    <input type="number" id="equityCapture" value="0.01">
+      <label for="equityCapture">Market Capture % (Equity):</label>
+      <input type="number" id="equityCapture" value="0.01">
 
-    <label for="forexVolume">Forex Daily Trading Volume (USD):</label>
-    <input type="number" id="forexVolume" value="7500000000000">
+      <label for="forexVolume">Forex Daily Trading Volume (USD):</label>
+      <input type="number" id="forexVolume" value="7500000000000">
 
-    <label for="forexCapture">Market Capture % (Forex):</label>
-    <input type="number" id="forexCapture" value="0.01">
+      <label for="forexCapture">Market Capture % (Forex):</label>
+      <input type="number" id="forexCapture" value="0.01">
 
-    <label for="commodityVolume">Commodity Daily Trading Volume (USD):</label>
-    <input type="number" id="commodityVolume" value="200000000000">
+      <label for="commodityVolume">Commodity Daily Trading Volume (USD):</label>
+      <input type="number" id="commodityVolume" value="200000000000">
 
-    <label for="commodityCapture">Market Capture % (Commodity):</label>
-    <input type="number" id="commodityCapture" value="0.01">
+      <label for="commodityCapture">Market Capture % (Commodity):</label>
+      <input type="number" id="commodityCapture" value="0.01">
 
-    <label for="cryptoVolume">Crypto Daily Trading Volume (USD):</label>
-    <input type="number" id="cryptoVolume" value="100000000000">
+      <label for="cryptoVolume">Crypto Daily Trading Volume (USD):</label>
+      <input type="number" id="cryptoVolume" value="100000000000">
 
-    <label for="cryptoCapture">Market Capture % (Crypto):</label>
-    <input type="number" id="cryptoCapture" value="0.01">
+      <label for="cryptoCapture">Market Capture % (Crypto):</label>
+      <input type="number" id="cryptoCapture" value="0.01">
 
-    <label for="rwaVolume">RWA Daily Trading Volume (USD):</label>
-    <input type="number" id="rwaVolume" value="50000000000">
+      <label for="rwaVolume">RWA Daily Trading Volume (USD):</label>
+      <input type="number" id="rwaVolume" value="50000000000">
 
-    <label for="rwaCapture">Market Capture % (RWA):</label>
-    <input type="number" id="rwaCapture" value="0.01">
-
-    <h2>Protocol Parameters</h2>
-    <label for="tradingFee">Trading Fee (%) (Round-Trip):</label>
-    <input type="number" id="tradingFee" value="0.26">
-
-    <label for="rebate">Rebate (%) :</label>
-    <input type="number" id="rebate" value="10">
-
-    <label for="stakerShare">Stakers Share (%) :</label>
-    <input type="number" id="stakerShare" value="80">
-
-    <label for="ethPrice">ETH Price (USD):</label>
-    <input type="number" id="ethPrice" value="3000">
-
-    <h2>Staking Parameters</h2>
-    <label for="pearPrice">PEAR Price (USD):</label>
-    <input type="number" id="pearPrice" value="0.50">
-
-    <label for="stakers">Number of Stakers:</label>
-    <input type="number" id="stakers" value="1589">
-
-    <label for="totalPear">Total PEAR Staked:</label>
-    <input type="number" id="totalPear" value="4000000">
-
-    <button onclick="calculate()">Calculate</button>
-
-    <div id="output" class="result">
-      <p><strong>Results will appear here after calculation.</strong></p>
+      <label for="rwaCapture">Market Capture % (RWA):</label>
+      <input type="number" id="rwaCapture" value="0.01">
     </div>
+
+    <!-- Right: Protocol and Staking Parameters -->
+    <div class="box">
+      <h2>Protocol and Staking Parameters</h2>
+      <label for="tradingFee">Trading Fee (%) (Round-Trip):</label>
+      <input type="number" id="tradingFee" value="0.26">
+
+      <label for="rebate">Rebate (%) :</label>
+      <input type="number" id="rebate" value="10">
+
+      <label for="stakerShare">Stakers Share (%) :</label>
+      <input type="number" id="stakerShare" value="80">
+
+      <label for="ethPrice">ETH Price (USD):</label>
+      <input type="number" id="ethPrice" value="3000">
+
+      <label for="pearPrice">PEAR Price (USD):</label>
+      <input type="number" id="pearPrice" value="0.50">
+
+      <label for="stakers">Number of Stakers:</label>
+      <input type="number" id="stakers" value="1589">
+
+      <label for="totalPear">Total PEAR Staked:</label>
+      <input type="number" id="totalPear" value="4000000">
+
+      <button onclick="calculate()">Calculate</button>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div class="result" id="output">
+    <p><strong>Results will appear here after calculation.</strong></p>
   </div>
 
   <script>
@@ -169,7 +188,7 @@
       const annualEthPerPear = dailyEthPerPear * 365;
 
       // Staking APR (in %)
-      const annualStakingRewards = annualEthPerPear * totalPear * pearPrice;
+      const annualStakingRewards = annualEthPerPear * totalPear * ethPrice;
       const apr = (annualStakingRewards / (totalPear * pearPrice)) * 100;
 
       // Display results
