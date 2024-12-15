@@ -74,11 +74,6 @@
     button:hover {
       background: linear-gradient(90deg, #16c9b0, #10b981);
     }
-    .button-group {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 20px;
-    }
     .result {
       margin-top: 20px;
       padding: 15px;
@@ -112,9 +107,9 @@
   <!-- Scenario Descriptions -->
   <div class="container">
     <h2>Scenarios</h2>
-    <p><strong>Bearish Scenario:</strong> Capture 0.001% of total blockchain trading volume.</p>
-    <p><strong>Neutral Scenario:</strong> Capture 0.005% of total blockchain trading volume.</p>
-    <p><strong>Bullish Scenario:</strong> Capture 0.01% of total blockchain trading volume.</p>
+    <p><strong>Bearish Scenario:</strong> Capture 0.1% of total combined exchange volume.</p>
+    <p><strong>Neutral Scenario:</strong> Capture 0.5% of total combined exchange volume.</p>
+    <p><strong>Bullish Scenario:</strong> Capture 1% of total combined exchange volume.</p>
   </div>
 
   <!-- Live Prices Section -->
@@ -133,12 +128,12 @@
       <button onclick="applyScenario(0.01)">Bullish</button>
     </div>
     <div class="input-row">
-      <label for="blockchainVolume">Total Blockchain Volume (Annual in USD):</label>
-      <input type="number" id="blockchainVolume" value="2555000000000" step="1">
+      <label for="blockchainVolume">Total Combined Exchange Volume (Annual in USD):</label>
+      <input type="number" id="blockchainVolume" value="Loading..." disabled>
     </div>
     <div class="input-row">
       <label for="captureRate">Capture Rate %:</label>
-      <input type="number" id="captureRate" value="0.001" step="0.001">
+      <input type="number" id="captureRate" value="0.1" step="0.1">
     </div>
     <div class="input-row">
       <label for="tradingFee">Trading Fee %:</label>
@@ -169,7 +164,7 @@
     <p>
       Made by <a href="https://twitter.com/0xRemco" target="_blank">0xRemco</a> |
       <a href="https://twitter.com/pear_x" target="_blank">Pear X</a> |
-      <a href="https://discord.com/invite/pear" target="_blank">Discord</a> |
+      <a href="https://discord.gg/pearprotocol" target="_blank">Discord</a> |
       <a href="https://docs.pearprotocol.io" target="_blank">Docs</a>
     </p>
   </footer>
@@ -187,6 +182,24 @@
 
       document.getElementById("ethPrice").innerText = ethPrice.toFixed(2);
       document.getElementById("pearPrice").innerText = pearPrice.toFixed(2);
+    }
+
+    // Fetch combined exchange volumes
+    async function fetchExchangeVolumes() {
+      const response = await fetch(
+        "https://api.coingecko.com/api/v3/simple/price?ids=gmx,vertex-protocol,hyper-protocol,symm&vs_currencies=usd"
+      );
+      const data = await response.json();
+
+      // Combine volumes (example logic; replace with actual API keys if required)
+      const combinedVolume =
+        (data.gmx.usd || 0) +
+        (data["vertex-protocol"].usd || 0) +
+        (data["hyper-protocol"].usd || 0) +
+        (data.symm.usd || 0);
+
+      // Set the combined volume to the blockchainVolume field
+      document.getElementById("blockchainVolume").value = (combinedVolume * 1e9).toFixed(2); // Assume billions
     }
 
     // Apply preset scenarios
@@ -225,8 +238,9 @@
       `;
     }
 
-    // Fetch prices on page load
+    // Fetch data on page load
     fetchPrices();
+    fetchExchangeVolumes();
   </script>
 </body>
 </html>
