@@ -108,6 +108,11 @@
   <!-- Input Section -->
   <div class="container">
     <h2>Inputs</h2>
+    <div class="preset-buttons">
+      <button onclick="applyScenario(0.001)">Bearish Scenario</button>
+      <button onclick="applyScenario(0.005)">Neutral Scenario</button>
+      <button onclick="applyScenario(0.01)">Bullish Scenario</button>
+    </div>
     <div class="input-row">
       <label for="blockchainVolume">Total Blockchain Volume (Annual in USD):</label>
       <input type="number" id="blockchainVolume" value="2555000000000" step="1">
@@ -115,6 +120,18 @@
     <div class="input-row">
       <label for="captureRate">Capture Rate %:</label>
       <input type="number" id="captureRate" value="0.001" step="0.001">
+    </div>
+    <div class="input-row">
+      <label for="tradingFee">Trading Fee %:</label>
+      <input type="number" id="tradingFee" value="0.26" step="0.01">
+    </div>
+    <div class="input-row">
+      <label for="rebate">Rebate %:</label>
+      <input type="number" id="rebate" value="10" step="1">
+    </div>
+    <div class="input-row">
+      <label for="stakerShare">Staker Share %:</label>
+      <input type="number" id="stakerShare" value="80" step="1">
     </div>
     <div class="input-row">
       <label for="stakedPEAR">Total PEAR Staked (millions):</label>
@@ -128,6 +145,7 @@
     <p><strong>Results will appear here after calculation.</strong></p>
   </div>
 
+  <!-- Footer -->
   <footer>
     <p>Made by <a href="https://twitter.com/0xRemco" target="_blank">0xRemco</a></p>
   </footer>
@@ -147,16 +165,19 @@
       document.getElementById("pearPrice").innerText = pearPrice.toFixed(2);
     }
 
+    // Apply preset scenarios
+    function applyScenario(capture) {
+      document.getElementById("captureRate").value = capture;
+    }
+
     // Perform calculations
     function calculate() {
       const blockchainVolume = parseFloat(document.getElementById("blockchainVolume").value);
       const captureRate = parseFloat(document.getElementById("captureRate").value) / 100;
+      const tradingFee = parseFloat(document.getElementById("tradingFee").value) / 100;
+      const rebate = parseFloat(document.getElementById("rebate").value) / 100;
+      const stakerShare = parseFloat(document.getElementById("stakerShare").value) / 100;
       const stakedPEAR = parseFloat(document.getElementById("stakedPEAR").value) * 1_000_000;
-
-      // Protocol Parameters
-      const tradingFee = 0.0026; // 0.26%
-      const rebate = 0.10; // 10%
-      const stakerShare = 0.80; // 80%
 
       // Gross and Net Fees
       const capturedVolume = blockchainVolume * captureRate;
