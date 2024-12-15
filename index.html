@@ -15,7 +15,7 @@
     h1 {
       font-size: 32px;
       color: #ffffff;
-      margin-top: 20px;
+      margin-top: 10px;
       text-align: center;
       display: flex;
       align-items: center;
@@ -28,38 +28,44 @@
     }
     .container {
       max-width: 900px;
-      margin: 20px auto;
-      padding: 20px;
+      margin: 10px auto;
+      padding: 10px;
       background-color: #161b22;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
     }
     .input-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
     }
     label {
       flex: 1;
-      font-size: 14px;
+      font-size: 12px;
       font-weight: bold;
     }
     input[type="number"] {
-      flex: 2;
-      padding: 8px;
+      flex: 1;
+      padding: 5px;
       border-radius: 8px;
       border: 1px solid #30363d;
       background-color: #0d1117;
       color: #c9d1d9;
+      font-size: 12px;
     }
     button {
       width: auto;
-      padding: 8px 12px;
-      margin: 0 5px;
+      padding: 5px 10px;
       border: none;
       border-radius: 8px;
-      font-size: 14px;
+      font-size: 12px;
       font-weight: bold;
       cursor: pointer;
       color: #fff;
@@ -70,23 +76,24 @@
       background: linear-gradient(90deg, #16c9b0, #10b981);
     }
     .result {
-      margin-top: 20px;
-      padding: 15px;
+      margin-top: 15px;
+      padding: 10px;
       background: #0d9f6e;
       color: #ffffff;
       border-radius: 8px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      font-size: 12px;
     }
     footer {
       text-align: center;
-      margin: 40px 0 20px;
-      font-size: 14px;
+      margin: 20px 0 10px;
+      font-size: 12px;
       color: #c9d1d9;
     }
     footer a {
       color: #10b981;
       text-decoration: none;
-      margin: 0 10px;
+      margin: 0 5px;
     }
     footer a:hover {
       text-decoration: underline;
@@ -101,7 +108,7 @@
       border-radius: 8px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
       z-index: 1000;
-      font-size: 14px;
+      font-size: 12px;
       display: none;
     }
   </style>
@@ -114,23 +121,25 @@
 
   <div class="popup" id="errorPopup">Data could not be fetched automatically; fill in the fields manually</div>
 
-  <div class="container">
-    <h2>Live Prices</h2>
-    <div class="input-row">
-      <label for="ethPrice">Ethereum Price (USD):</label>
-      <input type="number" id="ethPrice" value="Loading..." disabled>
+  <div class="container row">
+    <div>
+      <h2>Live Prices</h2>
+      <div class="input-row">
+        <label for="ethPrice">Ethereum Price (USD):</label>
+        <input type="number" id="ethPrice" value="Loading..." disabled>
+      </div>
+      <div class="input-row">
+        <label for="pearPrice">PEAR Price (USD):</label>
+        <input type="number" id="pearPrice" value="Loading..." disabled>
+      </div>
     </div>
-    <div class="input-row">
-      <label for="pearPrice">PEAR Price (USD):</label>
-      <input type="number" id="pearPrice" value="Loading..." disabled>
-    </div>
-  </div>
 
-  <div class="container">
-    <h2>Combined Trading Volume</h2>
-    <div class="input-row">
-      <label for="blockchainVolume">Total Combined Volume (USD):</label>
-      <input type="number" id="blockchainVolume" value="500000000" step="1000000">
+    <div>
+      <h2>Combined Trading Volume</h2>
+      <div class="input-row">
+        <label for="blockchainVolume">Total Volume (USD):</label>
+        <input type="number" id="blockchainVolume" value="500000000" step="1000000">
+      </div>
     </div>
   </div>
 
@@ -138,7 +147,7 @@
     <h2>Inputs</h2>
     <div class="input-row">
       <label for="captureRate">Capture Rate %:</label>
-      <input type="number" id="captureRate" value="0.1" step="0.1">
+      <input type="number" id="captureRate" value="0.001" step="0.001">
     </div>
     <div class="input-row">
       <label for="stakerShare">Staker Share %:</label>
