@@ -58,15 +58,10 @@
       background-color: #0d1117;
       color: #c9d1d9;
     }
-    .button-group {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin: 20px auto;
-    }
     button {
       width: auto;
       padding: 8px 12px;
+      margin: 0 5px;
       border: none;
       border-radius: 8px;
       font-size: 14px;
@@ -128,9 +123,9 @@
   <div class="container">
     <h2>Inputs</h2>
     <div class="button-group">
-      <button onclick="applyScenario(0.001)">Bearish</button>
-      <button onclick="applyScenario(0.005)">Neutral</button>
-      <button onclick="applyScenario(0.01)">Bullish</button>
+      <button onclick="applyScenario(0.1)">Bearish</button>
+      <button onclick="applyScenario(0.5)">Neutral</button>
+      <button onclick="applyScenario(1.0)">Bullish</button>
     </div>
     <div class="input-row">
       <label for="blockchainVolume">Total Combined Exchange Volume (Annual in USD):</label>
@@ -189,22 +184,21 @@
       document.getElementById("pearPrice").innerText = pearPrice.toFixed(2);
     }
 
-    // Fetch combined exchange volumes
+    // Fetch combined exchange volumes using tickers API
     async function fetchExchangeVolumes() {
-      const response = await fetch(
-        "https://api.coingecko.com/api/v3/simple/price?ids=gmx,vertex-protocol,hyper-protocol,symm&vs_currencies=usd"
-      );
-      const data = await response.json();
+      const exchanges = ["gmx", "vertex-protocol", "hyper-protocol", "symm"];
+      let totalVolume = 0;
 
-      // Combine volumes (example logic; replace with actual API keys if required)
-      const combinedVolume =
-        (data.gmx.usd || 0) +
-        (data["vertex-protocol"].usd || 0) +
-        (data["hyper-protocol"].usd || 0) +
-        (data.symm.usd || 0);
+      for (const exchange of exchanges) {
+        const response = await fetch(`https://api.coingecko.com/api/v3/exchanges/${exchange}/tickers`);
+        const data = await response.json();
 
-      // Set the combined volume to the blockchainVolume field
-      document.getElementById("blockchainVolume").value = (combinedVolume * 1e9).toFixed(2); // Assume billions
+        const exchangeVolume = data.tickers.reduce((sum, ticker) => sum + (ticker.base_volume || 0), 0);
+        totalVolume += exchangeVolume;
+      }
+
+      // Set total volume
+      document.getElementById("blockchainVolume").value = (totalVolume * 365).toFixed(2); // Annualize daily volume
     }
 
     // Apply preset scenarios
