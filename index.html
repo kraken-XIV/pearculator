@@ -123,6 +123,17 @@
     button:hover {
       background: linear-gradient(90deg, #16c9b0, #10b981); /* Reverse gradient */
     }
+    .preset-buttons {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .preset-buttons button {
+      flex: 1;
+      padding: 10px;
+      font-size: 14px;
+    }
     .result {
       margin-top: 20px;
       padding: 15px;
@@ -168,6 +179,12 @@
 
   <!-- Calculator Section -->
   <div class="container">
+    <div class="preset-buttons">
+      <button onclick="applyBearish()">Bearish Scenario</button>
+      <button onclick="applyNeutral()">Neutral Scenario</button>
+      <button onclick="applyBullish()">Bullish Scenario</button>
+    </div>
+
     <div class="input-row">
       <label for="equityCapture">Equity Market Capture %</label>
       <input type="range" id="equityCapture" min="0" max="100" step="0.001" value="5">
@@ -208,34 +225,4 @@
     function applyPreset() {
       document.getElementById("equityCapture").value = 5;
       document.getElementById("forexCapture").value = 1;
-      document.getElementById("commodityCapture").value = 3;
-      document.getElementById("rwaCapture").value = 10;
-
-      document.getElementById("equityCaptureValue").value = 5;
-      document.getElementById("forexCaptureValue").value = 1;
-      document.getElementById("commodityCaptureValue").value = 3;
-      document.getElementById("rwaCaptureValue").value = 10;
-    }
-
-    function syncSlider(field) {
-      const slider = document.getElementById(field);
-      const valueField = document.getElementById(field + "Value");
-      slider.value = valueField.value;
-    }
-
-    function calculate() {
-      const equityCapture = parseFloat(document.getElementById("equityCapture").value) / 100;
-      const forexCapture = parseFloat(document.getElementById("forexCapture").value) / 100;
-      const commodityCapture = parseFloat(document.getElementById("commodityCapture").value) / 100;
-      const rwaCapture = parseFloat(document.getElementById("rwaCapture").value) / 100;
-
-      const totalCapture = (equityCapture + forexCapture + commodityCapture + rwaCapture).toFixed(4);
-
-      document.getElementById("output").innerHTML = `
-        <p><strong>Total Market Capture:</strong> ${totalCapture * 100}%</p>
-        <p>Equity: ${equityCapture * 100}% | Forex: ${forexCapture * 100}% | Commodities: ${commodityCapture * 100}% | RWAs: ${rwaCapture * 100}%</p>
-      `;
-    }
-  </script>
-</body>
-</html>
+      document.getElementById("commodityCapture").value
