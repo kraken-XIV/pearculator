@@ -135,9 +135,9 @@
     </div>
 
     <div>
-      <h2>Combined Trading Volume</h2>
+      <h2>Total On-Chain Volume</h2>
       <div class="input-row">
-        <label for="blockchainVolume">Total Volume (USD):</label>
+        <label for="blockchainVolume">Total EVM Volume (USD):</label>
         <input type="number" id="blockchainVolume" value="Loading..." disabled>
       </div>
     </div>
@@ -173,11 +173,7 @@
     <p>
       Made by <a href="https://twitter.com/0xremco" target="_blank">Twitter</a> |
       <a href="https://discord.gg/pearprotocol" target="_blank">Discord</a> |
-      <a href="https://docs.pearprotocol.io" target="_blank">Docs</a> |
-      <a href="https://dune.com/naveedinno/symmio-analytics" target="_blank">Symm Analytics</a> |
-      <a href="https://dune.com/gmx-io/gmx-analytics" target="_blank">GMX Analytics</a> |
-      <a href="https://dune.com/frijoles/vertex" target="_blank">Vertex Analytics</a> |
-      <a href="https://dune.com/uwusanauwu/perps" target="_blank">Hyperliquid Analytics</a>
+      <a href="https://docs.pearprotocol.io" target="_blank">Docs</a>
     </p>
   </footer>
 
@@ -192,17 +188,12 @@
       setTimeout(() => popup.style.display = 'none', 5000);
     }
 
-    // Fetch live prices and combined volume
+    // Fetch live prices and EVM-compatible volume
     async function fetchLiveData() {
       try {
-        const [pricesResponse, duneResponses] = await Promise.all([
+        const [pricesResponse, evmVolumeResponse] = await Promise.all([
           fetch("https://api.coingecko.com/api/v3/simple/price?ids=ethereum,pear-protocol&vs_currencies=usd"),
-          Promise.all([
-            fetch("https://dune.com/naveedinno/symmio-analytics"),
-            fetch("https://dune.com/gmx-io/gmx-analytics"),
-            fetch("https://dune.com/frijoles/vertex"),
-            fetch("https://dune.com/uwusanauwu/perps"),
-          ])
+          fetch("https://api.coingecko.com/api/v3/total_volume_on_chain_endpoint") // Replace with actual EVM-compatible volume API
         ]);
 
         const pricesData = await pricesResponse.json();
@@ -212,12 +203,10 @@
         document.getElementById("ethPrice").value = ethPrice.toFixed(2);
         document.getElementById("pearPrice").value = pearPrice.toFixed(2);
 
-        const totalVolume = duneResponses.reduce((sum, response) => {
-          // Logic to extract trading volume from Dune API responses
-          return sum + parseFloat(response.volume || 0);
-        }, 0);
+        const evmVolumeData = await evmVolumeResponse.json();
+        const totalEvmVolume = evmVolumeData.total_volume || 0;
 
-        document.getElementById("blockchainVolume").value = totalVolume.toFixed(2);
+        document.getElementById("blockchainVolume").value = totalEvmVolume.toFixed(2);
       } catch (error) {
         console.error('Error fetching live data:', error);
         showErrorPopup();
@@ -250,7 +239,7 @@
         <p><strong>Net Fees (After Rebate):</strong> $${netFees.toFixed(2)}</p>
         <p><strong>Staker Revenue:</strong> $${stakerRevenue.toFixed(2)}</p>
         <p><strong>Daily ETH Payout:</strong> ${dailyEthPayout.toFixed(8)} ETH</p>
-        <p><strong>Annual ETH Per PEAR:</strong> ${annualEthPerPear.toFixed(8)} ETH</p>
+		<p><strong>Annual ETH Per PEAR:</strong> ${annualEthPerPear.toFixed(8)} ETH</p>
         <p><strong>Total Annual ETH Earned by PEAR:</strong> ${totalAnnualEth.toFixed(2)} ETH</p>
       `;
     }
