@@ -59,12 +59,12 @@
       color: #c9d1d9;
     }
     button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
+      width: auto;
+      padding: 8px 12px;
+      margin: 0 5px;
       border: none;
       border-radius: 8px;
-      font-size: 16px;
+      font-size: 14px;
       font-weight: bold;
       cursor: pointer;
       color: #fff;
@@ -73,6 +73,11 @@
     }
     button:hover {
       background: linear-gradient(90deg, #16c9b0, #10b981);
+    }
+    .button-group {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
     }
     .result {
       margin-top: 20px;
@@ -84,6 +89,20 @@
     }
     .result strong {
       color: #ffffff;
+    }
+    footer {
+      text-align: center;
+      margin: 40px 0 20px;
+      font-size: 14px;
+      color: #c9d1d9;
+    }
+    footer a {
+      color: #10b981;
+      text-decoration: none;
+      margin: 0 10px;
+    }
+    footer a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
@@ -108,10 +127,10 @@
   <!-- Input Section -->
   <div class="container">
     <h2>Inputs</h2>
-    <div class="preset-buttons">
-      <button onclick="applyScenario(0.001)">Bearish Scenario</button>
-      <button onclick="applyScenario(0.005)">Neutral Scenario</button>
-      <button onclick="applyScenario(0.01)">Bullish Scenario</button>
+    <div class="button-group">
+      <button onclick="applyScenario(0.001)">Bearish</button>
+      <button onclick="applyScenario(0.005)">Neutral</button>
+      <button onclick="applyScenario(0.01)">Bullish</button>
     </div>
     <div class="input-row">
       <label for="blockchainVolume">Total Blockchain Volume (Annual in USD):</label>
@@ -147,7 +166,12 @@
 
   <!-- Footer -->
   <footer>
-    <p>Made by <a href="https://twitter.com/0xRemco" target="_blank">0xRemco</a></p>
+    <p>
+      Made by <a href="https://twitter.com/0xRemco" target="_blank">0xRemco</a> |
+      <a href="https://twitter.com/pear_x" target="_blank">Pear X</a> |
+      <a href="https://discord.com/invite/pear" target="_blank">Discord</a> |
+      <a href="https://docs.pearprotocol.io" target="_blank">Docs</a>
+    </p>
   </footer>
 
   <script>
