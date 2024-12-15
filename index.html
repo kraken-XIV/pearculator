@@ -25,6 +25,7 @@
     h2 {
       font-size: 20px;
       color: #e5e7eb; /* Subtle white */
+      margin-bottom: 10px;
     }
     p {
       font-size: 16px;
@@ -33,26 +34,13 @@
       max-width: 800px;
       margin: 10px auto;
     }
-    .summary {
-      max-width: 800px;
+    .scenario {
+      text-align: center;
       margin: 20px auto;
-      background-color: #161b22; /* Card background */
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
-    .summary button {
-      background: linear-gradient(90deg, #10b981, #16c9b0); /* Gradient */
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 8px;
+    .scenario p {
       font-size: 14px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    .summary button:hover {
-      background: linear-gradient(90deg, #16c9b0, #10b981); /* Reverse gradient */
+      margin: 5px auto;
     }
     .container {
       max-width: 900px;
@@ -74,28 +62,8 @@
       font-weight: bold;
       color: #c9d1d9;
     }
-    input[type="range"] {
+    input[type="range"], input[type="number"], input[type="text"] {
       flex: 2;
-      -webkit-appearance: none;
-      width: 100%;
-      height: 8px;
-      border-radius: 5px;
-      background: linear-gradient(90deg, #10b981, #16c9b0); /* Gradient */
-      outline: none;
-      transition: background 0.3s;
-    }
-    input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: #10b981; /* Thumb color */
-      cursor: pointer;
-      box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    }
-    input[type="text"], input[type="number"] {
-      flex: 1;
       padding: 8px;
       border-radius: 8px;
       border: 1px solid #30363d; /* Matches Pear aesthetic */
@@ -103,7 +71,21 @@
       color: #c9d1d9;
       font-size: 14px;
     }
-    input[type="text"]:focus, input[type="number"]:focus {
+    input[type="range"] {
+      width: 100%;
+      height: 8px;
+      background: linear-gradient(90deg, #10b981, #16c9b0); /* Gradient */
+      outline: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #10b981; /* Thumb color */
+      cursor: pointer;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    }
+    input:focus {
       outline: none;
       border-color: #10b981; /* Highlight on focus */
     }
@@ -165,20 +147,16 @@
 <body>
   <h1>PEARCULATOR 9000™</h1>
 
-  <!-- Summary Section -->
-  <div class="summary">
-    <h2>Expected Market Transitions (Next 5 Years)</h2>
-    <p>
-      - Equity: <strong>5%</strong> expected to move to blockchain.<br>
-      - Forex: <strong>1%</strong> expected to move to blockchain.<br>
-      - Commodities: <strong>3%</strong> expected to move to blockchain.<br>
-      - RWAs: <strong>10%</strong> expected to tokenize and move to blockchain.
-    </p>
-    <button onclick="applyPreset()">Apply Preset Values</button>
+  <!-- Brief Scenario Descriptions -->
+  <div class="scenario">
+    <p><strong>Bearish Scenario:</strong> Only 0.001% of TradFi pair trading moves to blockchain.</p>
+    <p><strong>Neutral Scenario:</strong> Approximately 0.005% of TradFi pair trading transitions to blockchain.</p>
+    <p><strong>Bullish Scenario:</strong> Optimistically, 0.01% of TradFi pair trading is captured on-chain.</p>
   </div>
 
   <!-- Calculator Section -->
   <div class="container">
+    <h2>Market Capture</h2>
     <div class="preset-buttons">
       <button onclick="applyBearish()">Bearish Scenario</button>
       <button onclick="applyNeutral()">Neutral Scenario</button>
@@ -187,32 +165,45 @@
 
     <div class="input-row">
       <label for="equityCapture">Equity Market Capture %</label>
-      <input type="range" id="equityCapture" min="0" max="100" step="0.001" value="5">
-      <input type="text" id="equityCaptureValue" value="5" oninput="syncSlider('equityCapture')">
+      <input type="range" id="equityCapture" min="0" max="100" step="0.001" value="0.001">
+      <input type="number" id="equityCaptureValue" value="0.001" oninput="syncSlider('equityCapture')">
     </div>
     <div class="input-row">
       <label for="forexCapture">Forex Market Capture %</label>
-      <input type="range" id="forexCapture" min="0" max="100" step="0.001" value="1">
-      <input type="text" id="forexCaptureValue" value="1" oninput="syncSlider('forexCapture')">
+      <input type="range" id="forexCapture" min="0" max="100" step="0.001" value="0.001">
+      <input type="number" id="forexCaptureValue" value="0.001" oninput="syncSlider('forexCapture')">
     </div>
     <div class="input-row">
       <label for="commodityCapture">Commodities Market Capture %</label>
-      <input type="range" id="commodityCapture" min="0" max="100" step="0.001" value="3">
-      <input type="text" id="commodityCaptureValue" value="3" oninput="syncSlider('commodityCapture')">
+      <input type="range" id="commodityCapture" min="0" max="100" step="0.001" value="0.001">
+      <input type="number" id="commodityCaptureValue" value="0.001" oninput="syncSlider('commodityCapture')">
     </div>
     <div class="input-row">
       <label for="rwaCapture">RWAs Market Capture %</label>
-      <input type="range" id="rwaCapture" min="0" max="100" step="0.001" value="10">
-      <input type="text" id="rwaCaptureValue" value="10" oninput="syncSlider('rwaCapture')">
+      <input type="range" id="rwaCapture" min="0" max="100" step="0.001" value="0.001">
+      <input type="number" id="rwaCaptureValue" value="0.001" oninput="syncSlider('rwaCapture')">
     </div>
 
+    <h2>Tokenomics</h2>
     <div class="input-row">
-      <label for="stakedPEAR">PEAR Staked:</label>
-      <input type="number" id="stakedPEAR" value="1000">
+      <label for="tradingFee">Trading Fee (%)</label>
+      <input type="number" id="tradingFee" value="0.26">
     </div>
     <div class="input-row">
-      <label for="pearPrice">PEAR Price (USD):</label>
+      <label for="rebate">Rebate (%)</label>
+      <input type="number" id="rebate" value="10">
+    </div>
+    <div class="input-row">
+      <label for="stakerShare">Stakers’ Share (%)</label>
+      <input type="number" id="stakerShare" value="80">
+    </div>
+    <div class="input-row">
+      <label for="pearPrice">PEAR Price (USD)</label>
       <input type="number" id="pearPrice" value="0.50">
+    </div>
+    <div class="input-row">
+      <label for="stakedPEAR">PEAR Staked</label>
+      <input type="number" id="stakedPEAR" value="1000">
     </div>
 
     <button onclick="calculate()">Calculate</button>
@@ -223,7 +214,7 @@
     <p><strong>Results will appear here after calculation.</strong></p>
   </div>
 
-  <!-- Footer Section -->
+  <!-- Footer -->
   <footer>
     Made by <a href="https://twitter.com/0xRemco" target="_blank">0xRemco</a> | 
     <a href="https://twitter.com/pear_x" target="_blank">Pear X</a> | 
@@ -232,16 +223,28 @@
   </footer>
 
   <script>
-    function applyPreset() {
-      document.getElementById("equityCapture").value = 5;
-      document.getElementById("forexCapture").value = 1;
-      document.getElementById("commodityCapture").value = 3;
-      document.getElementById("rwaCapture").value = 10;
+    function applyBearish() {
+      setPresetValues(0.001, 0.001, 0.001, 0.001);
+    }
 
-      document.getElementById("equityCaptureValue").value = 5;
-      document.getElementById("forexCaptureValue").value = 1;
-      document.getElementById("commodityCaptureValue").value = 3;
-      document.getElementById("rwaCaptureValue").value = 10;
+    function applyNeutral() {
+      setPresetValues(0.005, 0.005, 0.005, 0.005);
+    }
+
+    function applyBullish() {
+      setPresetValues(0.01, 0.01, 0.01, 0.01);
+    }
+
+    function setPresetValues(equity, forex, commodity, rwa) {
+      document.getElementById("equityCapture").value = equity;
+      document.getElementById("forexCapture").value = forex;
+      document.getElementById("commodityCapture").value = commodity;
+      document.getElementById("rwaCapture").value = rwa;
+
+      document.getElementById("equityCaptureValue").value = equity;
+      document.getElementById("forexCaptureValue").value = forex;
+      document.getElementById("commodityCaptureValue").value = commodity;
+      document.getElementById("rwaCaptureValue").value = rwa;
     }
 
     function syncSlider(field) {
@@ -255,20 +258,29 @@
       const forexCapture = parseFloat(document.getElementById("forexCapture").value) / 100;
       const commodityCapture = parseFloat(document.getElementById("commodityCapture").value) / 100;
       const rwaCapture = parseFloat(document.getElementById("rwaCapture").value) / 100;
-      const stakedPEAR = parseFloat(document.getElementById("stakedPEAR").value);
+      const tradingFee = parseFloat(document.getElementById("tradingFee").value) / 100;
+      const rebate = parseFloat(document.getElementById("rebate").value) / 100;
+      const stakerShare = parseFloat(document.getElementById("stakerShare").value) / 100;
       const pearPrice = parseFloat(document.getElementById("pearPrice").value);
+      const stakedPEAR = parseFloat(document.getElementById("stakedPEAR").value);
 
-      const totalCapture = (equityCapture + forexCapture + commodityCapture + rwaCapture).toFixed(4);
-      const annualETH = (totalCapture * 0.02).toFixed(8); // Dummy logic for ETH earnings per year
-      const annualUSD = (annualETH * pearPrice).toFixed(2);
+      const totalCapturedVolume = (equityCapture + forexCapture + commodityCapture + rwaCapture) * 100; // Dummy logic
+      const grossFees = totalCapturedVolume * tradingFee;
+      const netFees = grossFees * (1 - rebate);
+      const stakerRevenue = netFees * stakerShare;
+      const dailyEthPayout = stakerRevenue / pearPrice;
+      const annualEthPerPear = (dailyEthPayout / stakedPEAR) * 365;
 
       document.getElementById("output").innerHTML = `
-        <p><strong>Total Market Capture:</strong> ${totalCapture * 100}%</p>
-        <p>Equity: ${equityCapture * 100}% | Forex: ${forexCapture * 100}% | Commodities: ${commodityCapture * 100}% | RWAs: ${rwaCapture * 100}%</p>
-        <p><strong>Annual ETH per PEAR Staked:</strong> ${annualETH} ETH</p>
-        <p><strong>Annual USD Earnings:</strong> $${annualUSD}</p>
+        <p><strong>Total Market Capture:</strong> ${totalCapturedVolume.toFixed(2)}%</p>
+        <p><strong>Gross Fees:</strong> $${grossFees.toFixed(2)}</p>
+        <p><strong>Net Fees (After Rebate):</strong> $${netFees.toFixed(2)}</p>
+        <p><strong>Staker Revenue:</strong> $${stakerRevenue.toFixed(2)}</p>
+        <p><strong>Daily ETH Payout:</strong> ${(dailyEthPayout / pearPrice).toFixed(8)} ETH</p>
+        <p><strong>Annual ETH Per PEAR:</strong> ${annualEthPerPear.toFixed(8)} ETH</p>
       `;
     }
   </script>
 </body>
 </html>
+
