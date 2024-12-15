@@ -1,20 +1,20 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pear Protocol Calculator</title>
+  <title>Pearculator 9001</title>
   <style>
     body {
       font-family: Arial, sans-serif;
+      font-size: 12px; /* Reduce text size by 25% */
       margin: 20px;
       background-color: #f4f4f9;
       color: #333;
     }
     h1 {
       text-align: center;
+      font-size: 24px; /* Keep the title size */
     }
     .container {
       max-width: 1200px;
@@ -39,14 +39,15 @@
       display: block;
       margin: 10px 0 5px;
       font-weight: bold;
+      font-size: 12px; /* Reduced size */
     }
     input {
-      width: 100%;
-      padding: 10px;
+      width: 33%; /* Reduce input field width */
+      padding: 8px; /* Adjust padding for smaller input */
       margin-bottom: 20px;
       border: 1px solid #ddd;
       border-radius: 4px;
-      font-size: 16px;
+      font-size: 12px; /* Reduced size */
     }
     button {
       background: #007bff;
@@ -55,11 +56,17 @@
       border: none;
       border-radius: 4px;
       cursor: pointer;
-      font-size: 16px;
+      font-size: 12px; /* Reduced size */
       width: 100%;
+    }
+    button.green {
+      background: #28a745;
     }
     button:hover {
       background: #0056b3;
+    }
+    button.green:hover {
+      background: #218838;
     }
     .result {
       margin-top: 20px;
@@ -67,6 +74,8 @@
       background: #e8f5e9;
       border: 1px solid #a5d6a7;
       border-radius: 4px;
+      max-width: 1200px; /* Restrict width to match the calculator */
+      word-wrap: break-word;
     }
     .result strong {
       color: #2e7d32;
@@ -83,31 +92,31 @@
       <input type="number" id="equityVolume" value="500000000000">
 
       <label for="equityCapture">Market Capture % (Equity):</label>
-      <input type="number" id="equityCapture" value="0.01">
+      <input type="number" id="equityCapture" value="0.001">
 
       <label for="forexVolume">Forex Daily Trading Volume (USD):</label>
       <input type="number" id="forexVolume" value="7500000000000">
 
       <label for="forexCapture">Market Capture % (Forex):</label>
-      <input type="number" id="forexCapture" value="0.01">
+      <input type="number" id="forexCapture" value="0.001">
 
       <label for="commodityVolume">Commodity Daily Trading Volume (USD):</label>
       <input type="number" id="commodityVolume" value="200000000000">
 
       <label for="commodityCapture">Market Capture % (Commodity):</label>
-      <input type="number" id="commodityCapture" value="0.01">
+      <input type="number" id="commodityCapture" value="0.001">
 
       <label for="cryptoVolume">Crypto Daily Trading Volume (USD):</label>
       <input type="number" id="cryptoVolume" value="100000000000">
 
       <label for="cryptoCapture">Market Capture % (Crypto):</label>
-      <input type="number" id="cryptoCapture" value="0.01">
+      <input type="number" id="cryptoCapture" value="0.001">
 
       <label for="rwaVolume">RWA Daily Trading Volume (USD):</label>
       <input type="number" id="rwaVolume" value="50000000000">
 
       <label for="rwaCapture">Market Capture % (RWA):</label>
-      <input type="number" id="rwaCapture" value="0.01">
+      <input type="number" id="rwaCapture" value="0.001">
     </div>
 
     <!-- Right: Protocol and Staking Parameters -->
@@ -128,13 +137,21 @@
       <label for="pearPrice">PEAR Price (USD):</label>
       <input type="number" id="pearPrice" value="0.50">
 
-      <label for="stakers">Number of Stakers:</label>
-      <input type="number" id="stakers" value="1589">
-
       <label for="totalPear">Total PEAR Staked:</label>
       <input type="number" id="totalPear" value="4000000">
 
       <button onclick="calculate()">Calculate</button>
+    </div>
+  </div>
+
+  <!-- Personal Earnings Calculator -->
+  <div class="container">
+    <div class="box">
+      <h2>Your Earnings</h2>
+      <label for="userPear">Your PEAR Staked:</label>
+      <input type="number" id="userPear" value="1000">
+
+      <button class="green" onclick="calculatePersonal()">Calculate Your Earnings</button>
     </div>
   </div>
 
@@ -143,7 +160,13 @@
     <p><strong>Results will appear here after calculation.</strong></p>
   </div>
 
+  <div class="result" id="personalOutput">
+    <p><strong>Your earnings will appear here after calculation.</strong></p>
+  </div>
+
   <script>
+    let annualEthPerPear = 0; // Global variable to use across both calculators
+
     function calculate() {
       // Market input values
       const equityVolume = parseFloat(document.getElementById("equityVolume").value);
@@ -162,10 +185,6 @@
       const rebate = parseFloat(document.getElementById("rebate").value) / 100;
       const stakerShare = parseFloat(document.getElementById("stakerShare").value) / 100;
       const ethPrice = parseFloat(document.getElementById("ethPrice").value);
-
-      // Staking parameters
-      const pearPrice = parseFloat(document.getElementById("pearPrice").value);
-      const stakers = parseFloat(document.getElementById("stakers").value);
       const totalPear = parseFloat(document.getElementById("totalPear").value);
 
       // Captured volumes
@@ -185,9 +204,10 @@
       // ETH Payouts
       const dailyEthPayout = stakerRevenue / ethPrice;
       const dailyEthPerPear = dailyEthPayout / totalPear;
-      const annualEthPerPear = dailyEthPerPear * 365;
+      annualEthPerPear = dailyEthPerPear * 365; // Store this globally
 
       // Staking APR (in %)
+      const pearPrice = parseFloat(document.getElementById("pearPrice").value);
       const annualStakingRewards = annualEthPerPear * totalPear * ethPrice;
       const apr = (annualStakingRewards / (totalPear * pearPrice)) * 100;
 
@@ -201,6 +221,25 @@
         <p><strong>Daily ETH per PEAR Staked:</strong> ${dailyEthPerPear.toFixed(8)} ETH</p>
         <p><strong>Annual ETH per PEAR Staked:</strong> ${annualEthPerPear.toFixed(8)} ETH</p>
         <p><strong>Staking APR:</strong> ${apr.toFixed(2)}%</p>
+      `;
+    }
+
+    function calculatePersonal() {
+      const userPear = parseFloat(document.getElementById("userPear").value);
+
+      if (annualEthPerPear === 0) {
+        document.getElementById("personalOutput").innerHTML = `
+          <p><strong>Please calculate the overall protocol earnings first by clicking the main "Calculate" button above.</strong></p>
+        `;
+        return;
+      }
+
+      // Calculate user's annual earnings
+      const userAnnualEth = annualEthPerPear * userPear;
+
+      document.getElementById("personalOutput").innerHTML = `
+        <p><strong>Your Annual ETH Earnings:</strong> ${userAnnualEth.toFixed(4)} ETH</p>
+        <p><strong>Your Annual USD Earnings (at current ETH price):</strong> $${(userAnnualEth * parseFloat(document.getElementById("ethPrice").value)).toFixed(2)}</p>
       `;
     }
   </script>
