@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pear Protocol Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f9;
+      color: #333;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    button {
+      background: #007bff;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      width: 100%;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .result {
+      margin: 20px 0;
+      padding: 10px;
+      background: #e8f5e9;
+      border: 1px solid #a5d6a7;
+      border-radius: 4px;
+    }
+    .result strong {
+      color: #2e7d32;
+    }
+  </style>
+</head>
+<body>
+  <h1>Pear Protocol Earnings Calculator</h1>
+  <div class="container">
+    <h2>Market Parameters</h2>
+    <label for="equityVolume">Equity Daily Trading Volume (USD):</label>
+    <input type="number" id="equityVolume" value="500000000000">
+
+    <label for="equityCapture">Market Capture % (Equity):</label>
+    <input type="number" id="equityCapture" value="0.01">
+
+    <label for="forexVolume">Forex Daily Trading Volume (USD):</label>
+    <input type="number" id="forexVolume" value="7500000000000">
+
+    <label for="forexCapture">Market Capture % (Forex):</label>
+    <input type="number" id="forexCapture" value="0.01">
+
+    <label for="commodityVolume">Commodity Daily Trading Volume (USD):</label>
+    <input type="number" id="commodityVolume" value="200000000000">
+
+    <label for="commodityCapture">Market Capture % (Commodity):</label>
+    <input type="number" id="commodityCapture" value="0.01">
+
+    <label for="cryptoVolume">Crypto Daily Trading Volume (USD):</label>
+    <input type="number" id="cryptoVolume" value="100000000000">
+
+    <label for="cryptoCapture">Market Capture % (Crypto):</label>
+    <input type="number" id="cryptoCapture" value="0.01">
+
+    <label for="rwaVolume">RWA Daily Trading Volume (USD):</label>
+    <input type="number" id="rwaVolume" value="50000000000">
+
+    <label for="rwaCapture">Market Capture % (RWA):</label>
+    <input type="number" id="rwaCapture" value="0.01">
+
+    <h2>Protocol Parameters</h2>
+    <label for="tradingFee">Trading Fee (%) (Round-Trip):</label>
+    <input type="number" id="tradingFee" value="0.26">
+
+    <label for="rebate">Rebate (%) :</label>
+    <input type="number" id="rebate" value="10">
+
+    <label for="stakerShare">Stakers Share (%) :</label>
+    <input type="number" id="stakerShare" value="80">
+
+    <label for="ethPrice">ETH Price (USD):</label>
+    <input type="number" id="ethPrice" value="3000">
+
+    <h2>Staking Parameters</h2>
+    <label for="pearPrice">PEAR Price (USD):</label>
+    <input type="number" id="pearPrice" value="0.50">
+
+    <label for="stakers">Number of Stakers:</label>
+    <input type="number" id="stakers" value="1589">
+
+    <label for="totalPear">Total PEAR Staked:</label>
+    <input type="number" id="totalPear" value="4000000">
+
+    <button onclick="calculate()">Calculate</button>
+
+    <div id="output" class="result">
+      <p><strong>Results will appear here after calculation.</strong></p>
+    </div>
+  </div>
+
+  <script>
+    function calculate() {
+      // Market input values
+      const equityVolume = parseFloat(document.getElementById("equityVolume").value);
+      const equityCapture = parseFloat(document.getElementById("equityCapture").value) / 100;
+      const forexVolume = parseFloat(document.getElementById("forexVolume").value);
+      const forexCapture = parseFloat(document.getElementById("forexCapture").value) / 100;
+      const commodityVolume = parseFloat(document.getElementById("commodityVolume").value);
+      const commodityCapture = parseFloat(document.getElementById("commodityCapture").value) / 100;
+      const cryptoVolume = parseFloat(document.getElementById("cryptoVolume").value);
+      const cryptoCapture = parseFloat(document.getElementById("cryptoCapture").value) / 100;
+      const rwaVolume = parseFloat(document.getElementById("rwaVolume").value);
+      const rwaCapture = parseFloat(document.getElementById("rwaCapture").value) / 100;
+
+      // Protocol parameters
+      const tradingFee = parseFloat(document.getElementById("tradingFee").value) / 100;
+      const rebate = parseFloat(document.getElementById("rebate").value) / 100;
+      const stakerShare = parseFloat(document.getElementById("stakerShare").value) / 100;
+      const ethPrice = parseFloat(document.getElementById("ethPrice").value);
+
+      // Staking parameters
+      const pearPrice = parseFloat(document.getElementById("pearPrice").value);
+      const stakers = parseFloat(document.getElementById("stakers").value);
+      const totalPear = parseFloat(document.getElementById("totalPear").value);
+
+      // Captured volumes
+      const capturedEquity = equityVolume * equityCapture;
+      const capturedForex = forexVolume * forexCapture;
+      const capturedCommodity = commodityVolume * commodityCapture;
+      const capturedCrypto = cryptoVolume * cryptoCapture;
+      const capturedRWA = rwaVolume * rwaCapture;
+
+      const totalCapturedVolume = capturedEquity + capturedForex + capturedCommodity + capturedCrypto + capturedRWA;
+
+      // Fees
+      const grossFees = totalCapturedVolume * tradingFee;
+      const netFees = grossFees * (1 - rebate);
+      const stakerRevenue = netFees * stakerShare;
+
+      // ETH Payouts
+      const dailyEthPayout = stakerRevenue / ethPrice;
+      const dailyEthPerPear = dailyEthPayout / totalPear;
+      const annualEthPerPear = dailyEthPerPear * 365;
+
+      // Staking APR (in %)
+      const annualStakingRewards = annualEthPerPear * totalPear * pearPrice;
+      const apr = (annualStakingRewards / (totalPear * pearPrice)) * 100;
+
+      // Display results
+      document.getElementById("output").innerHTML = `
+        <p><strong>Total Captured Volume:</strong> $${totalCapturedVolume.toLocaleString()}</p>
+        <p><strong>Gross Fees:</strong> $${grossFees.toLocaleString()}</p>
+        <p><strong>Net Fees (After Rebate):</strong> $${netFees.toLocaleString()}</p>
+        <p><strong>Staker Revenue:</strong> $${stakerRevenue.toLocaleString()}</p>
+        <p><strong>Daily ETH Payout:</strong> ${dailyEthPayout.toFixed(4)} ETH</p>
+        <p><strong>Daily ETH per PEAR Staked:</strong> ${dailyEthPerPear.toFixed(8)} ETH</p>
+        <p><strong>Annual ETH per PEAR Staked:</strong> ${annualEthPerPear.toFixed(8)} ETH</p>
+        <p><strong>Staking APR:</strong> ${apr.toFixed(2)}%</p>
+      `;
+    }
+  </script>
+</body>
+</html>
