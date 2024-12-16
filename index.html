@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PEARCULATOR 9000™</title>
   <style>
-    /* Original styles */
     body {
       font-family: 'Arial', sans-serif;
       background-color: #0d1117;
@@ -106,6 +105,31 @@
       font-size: 12px;
       display: none;
     }
+    .tooltip {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+    }
+    .tooltip .tooltip-text {
+      visibility: hidden;
+      width: 200px;
+      background-color: #ffffff;
+      color: #000000;
+      text-align: center;
+      border-radius: 5px;
+      padding: 5px;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      margin-left: -100px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .tooltip:hover .tooltip-text {
+      visibility: visible;
+      opacity: 1;
+    }
   </style>
 </head>
 <body>
@@ -128,13 +152,13 @@
     </div>
   </div>
 
-<div class="container">
-  <h2>Total On-Chain Volume</h2>
-  <div class="input-row">
-    <label for="blockchainVolume">Total Volume (USD):</label>
-    <input type="number" id="blockchainVolume" value="389200000000" step="1000000000">
+  <div class="container">
+    <h2>Total On-Chain Volume</h2>
+    <div class="input-row">
+      <label for="blockchainVolume">Total Volume (USD):</label>
+      <input type="number" id="blockchainVolume" value="389200000000" step="1000000000">
+    </div>
   </div>
-</div>
 
   <div class="container">
     <h2>Inputs</h2>
@@ -163,23 +187,47 @@
   </div>
 
   <div class="container result" id="output">
-    <p><strong>Results will appear here after calculation.</strong></p>
+    <p>
+      <strong>Gross Fees:</strong> 
+      <span class="tooltip"> $<span id="grossFees">0.00</span>
+        <span class="tooltip-text">Gross fees are the total fees collected from transactions before any deductions.</span>
+      </span>
+    </p>
+    <p>
+      <strong>Net Fees (After Rebate):</strong> 
+      <span class="tooltip"> $<span id="netFees">0.00</span>
+        <span class="tooltip-text">Net fees are the fees collected after accounting for rebates provided to users.</span>
+      </span>
+    </p>
+    <p>
+      <strong>Staker Revenue:</strong> 
+      <span class="tooltip"> $<span id="stakerRevenue">0.00</span>
+        <span class="tooltip-text">Staker revenue is the portion of net fees allocated to stakers.</span>
+      </span>
+    </p>
+    <p>
+      <strong>Daily ETH Payout:</strong> 
+      <span class="tooltip"> <span id="dailyEthPayout">0.00000000</span> ETH
+        <span class="tooltip-text">Daily ETH payout is the reward distributed to stakers each day, proportional to their stake.</span>
+      </span>
+    </p>
   </div>
 
-<footer>
-  <p>
-    Made by <span style="color: #ffffff;">0xRemco</span> | 
-    <a href="https://twitter.com/0xremco" target="_blank">Twitter</a> |
-    <a href="https://discord.gg/pearprotocol" target="_blank">Discord</a> |
-    <a href="https://docs.pearprotocol.io" target="_blank">Docs</a>
-  </p>
-</footer>
+  <footer>
+    <p>
+      Made by <span style="color: #ffffff;">0xRemco</span> | 
+      <a href="https://twitter.com/0xremco" target="_blank">Twitter</a> |
+      <a href="https://discord.gg/pearprotocol" target="_blank">Discord</a> |
+      <a href="https://docs.pearprotocol.io" target="_blank">Docs</a>
+    </p>
+  </footer>
 
   <script>
     let ethPrice = 0;
     let pearPrice = 0;
 
     document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("blockchainVolume").value = 389200000000; // Set default volume
       fetchLiveData();
     });
 
@@ -236,17 +284,11 @@
       const stakerRevenue = netFees * 0.8;
 
       const dailyEthPayout = stakerRevenue / ethPriceInput;
-      const annualEthPerPear = ((dailyEthPayout / stakedPEAR) * 365) * avgAPY;
-      const totalAnnualEth = dailyEthPayout * 365;
 
-      document.getElementById("output").innerHTML = `
-        <p><strong>Gross Fees:</strong> $${grossFees.toFixed(2)}</p>
-        <p><strong>Net Fees (After Rebate):</strong> $${netFees.toFixed(2)}</p>
-        <p><strong>Staker Revenue:</strong> $${stakerRevenue.toFixed(2)}</p>
-        <p><strong>Daily ETH Payout:</strong> ${dailyEthPayout.toFixed(8)} ETH</p>
-        <p><strong>Annual ETH Per PEAR (Including APY):</strong> ${annualEthPerPear.toFixed(8)} ETH</p>
-        <p><strong>Total Annual ETH Earned by PEAR:</strong> ${totalAnnualEth.toFixed(2)} ETH</p>
-      `;
+      document.getElementById("grossFees").textContent = grossFees.toFixed(2);
+      document.getElementById("netFees").textContent = netFees.toFixed(2);
+      document.getElementById("stakerRevenue").textContent = stakerRevenue.toFixed(2);
+      document.getElementById("dailyEthPayout").textContent = dailyEthPayout.toFixed(8);
     }
   </script>
 </body>
