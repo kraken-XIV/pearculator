@@ -168,7 +168,7 @@
 
 <footer>
   <p>
-    Made by <span style="color: #ffffff;">0xRemco</span> | 
+    Made by <span style="color: #ffffff;"> 0xRemco</span> | 
     <a href="https://twitter.com/pear_protocol" target="_blank">Twitter</a> |
     <a href="https://t.me/pearprotocol_community" target="_blank">Community TG</a> |	
     <a href="https://discord.gg/pearprotocol" target="_blank">Discord</a> |
@@ -214,8 +214,8 @@
         ethPrice = data.ethereum.usd || 0;
         pearPrice = data["pear-protocol"].usd || 0;
 
-        ethPriceInput.value = ethPrice.toFixed(2);
-        pearPriceInput.value = pearPrice.toFixed(2);
+        ethPriceInput.value = ethPrice.toFixed(0);
+        pearPriceInput.value = pearPrice.toFixed(3);
       } catch (error) {
         console.error("Error fetching live data:", error);
         showErrorPopup("Unable to fetch live prices. Enter manually.");
