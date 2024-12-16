@@ -40,6 +40,7 @@
       align-items: center;
       justify-content: space-between;
       margin-bottom: 10px;
+      gap: 10px;
     }
     label {
       flex: 1;
@@ -47,7 +48,7 @@
       font-weight: bold;
     }
     input[type="number"], select {
-      flex: 1;
+      flex: 2;
       padding: 5px;
       border-radius: 8px;
       border: 1px solid #30363d;
@@ -117,24 +118,21 @@
   <div class="popup" id="errorPopup">Data could not be fetched automatically; fill in the fields manually</div>
 
   <div class="container">
-    <h2>Live Prices</h2>
     <div class="input-row">
-      <label for="ethPrice">Ethereum Price (USD):</label>
-      <input type="number" id="ethPrice" value="Loading..." disabled>
-    </div>
-    <div class="input-row">
-      <label for="pearPrice">PEAR Price (USD):</label>
-      <input type="number" id="pearPrice" value="Loading..." disabled>
+      <div style="flex: 1;">
+        <label for="ethPrice">Ethereum Price (USD):</label>
+        <input type="text" id="ethPrice" value="Loading..." disabled>
+      </div>
+      <div style="flex: 1;">
+        <label for="pearPrice">PEAR Price (USD):</label>
+        <input type="text" id="pearPrice" value="Loading..." disabled>
+      </div>
+      <div style="flex: 2;">
+        <label for="blockchainVolume">Total Volume (USD):</label>
+        <input type="text" id="blockchainVolume" value="389,200,000,000" oninput="formatVolumeInput(this)">
+      </div>
     </div>
   </div>
-
-<div class="container">
-  <h2>Total On-Chain Trading Volume</h2>
-  <div class="input-row">
-    <label for="blockchainVolume">Total Volume (USD):</label>
-    <input type="number" id="blockchainVolume" value="389200000000" step="1000000000">
-  </div>
-</div>
 
   <div class="container">
     <h2>Inputs</h2>
@@ -214,18 +212,23 @@
         ethPrice = data.ethereum.usd || 0;
         pearPrice = data["pear-protocol"].usd || 0;
 
-        ethPriceInput.value = ethPrice.toFixed(0);
-        pearPriceInput.value = pearPrice.toFixed(3);
+        ethPriceInput.value = `$${ethPrice.toFixed(0)}`; // Display ETH price as $xxxx
+        pearPriceInput.value = `$${pearPrice.toFixed(3)}`; // Display PEAR price as $x.xxx
       } catch (error) {
         console.error("Error fetching live data:", error);
         showErrorPopup("Unable to fetch live prices. Enter manually.");
       }
     }
 
+    function formatVolumeInput(input) {
+      let value = input.value.replace(/[^0-9]/g, ""); // Remove non-numeric characters
+      input.value = new Intl.NumberFormat("en-US").format(value); // Format as USD with commas
+    }
+
     function calculate() {
-      const ethPriceInput = parseFloat(document.getElementById("ethPrice").value) || ethPrice;
-      const pearPriceInput = parseFloat(document.getElementById("pearPrice").value) || pearPrice;
-      const blockchainVolumeInput = parseFloat(document.getElementById("blockchainVolume").value) || 0;
+      const ethPriceInput = parseFloat(document.getElementById("ethPrice").value.replace(/[^0-9.]/g, "")) || ethPrice;
+      const pearPriceInput = parseFloat(document.getElementById("pearPrice").value.replace(/[^0-9.]/g, "")) || pearPrice;
+      const blockchainVolumeInput = parseFloat(document.getElementById("blockchainVolume").value.replace(/[^0-9]/g, "")) || 0;
       const captureRate = parseFloat(document.getElementById("captureRate").value) / 100 || 0;
       const rebate = parseFloat(document.getElementById("rebate").value) / 100 || 0;
       const stakedPEAR = parseFloat(document.getElementById("stakedPEAR").value) * 1_000_000 || 0;
