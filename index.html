@@ -37,21 +37,17 @@
     }
     .input-row {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 15px;
-      gap: 15px;
+      flex-direction: column;
+      margin-bottom: 20px;
     }
     .input-row label {
-      flex: 1;
       font-size: 14px;
       font-weight: bold;
-      color: #c9d1d9;
+      margin-bottom: 5px;
     }
     input[type="text"],
-    input[type="number"],
-    select {
-      flex: 2;
+    input[type="number"] {
+      width: 100%;
       padding: 10px;
       border-radius: 8px;
       border: 1px solid #30363d;
@@ -59,10 +55,17 @@
       color: #c9d1d9;
       font-size: 14px;
       outline: none;
-      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+      transition: border 0.3s ease, box-shadow 0.3s ease;
+    }
+    /* Highlight adjustable field */
+    .adjustable {
+      border: 1px solid #10b981;
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.8);
+      font-weight: bold;
     }
     input:focus {
       border-color: #10b981;
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.8);
     }
     button {
       display: block;
@@ -90,20 +93,6 @@
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
       font-size: 14px;
     }
-    footer {
-      text-align: center;
-      margin: 20px 0 10px;
-      font-size: 12px;
-      color: #c9d1d9;
-    }
-    footer a {
-      color: #10b981;
-      text-decoration: none;
-      margin: 0 5px;
-    }
-    footer a:hover {
-      text-decoration: underline;
-    }
   </style>
 </head>
 <body>
@@ -113,14 +102,21 @@
   </h1>
 
   <div class="container">
-    <h2>Live Prices and Volume</h2>
+    <h2>Live Prices</h2>
     <div class="input-row">
       <label for="ethPrice">Ethereum Price (USD):</label>
       <input type="text" id="ethPrice" value="$3906" disabled>
+    </div>
+    <div class="input-row">
       <label for="pearPrice">PEAR Price (USD):</label>
       <input type="text" id="pearPrice" value="$0.076" disabled>
-      <label for="blockchainVolume">Total Volume (USD):</label>
-      <input type="text" id="blockchainVolume" value="389,200,000,000" oninput="formatVolumeInput(this)">
+    </div>
+    <div class="input-row">
+      <label for="blockchainVolume">Total On-Chain Trading Volume (USD):</label>
+      <div style="display: flex; align-items: center;">
+        <span style="font-size: 16px; color: #10b981; margin-right: 5px;">$</span>
+        <input type="text" id="blockchainVolume" class="adjustable" value="389,200,000,000" oninput="formatVolumeInput(this)">
+      </div>
     </div>
   </div>
 
@@ -153,16 +149,6 @@
   <div class="container result" id="output">
     <p><strong>Results will appear here after calculation.</strong></p>
   </div>
-
-  <footer>
-    <p>
-      Made by <span style="color: #ffffff;">0xRemco</span> |
-      <a href="https://twitter.com/pear_protocol" target="_blank">Twitter</a> |
-      <a href="https://t.me/pearprotocol_community" target="_blank">Community TG</a> |
-      <a href="https://discord.gg/pearprotocol" target="_blank">Discord</a> |
-      <a href="https://docs.pearprotocol.io" target="_blank">Docs</a>
-    </p>
-  </footer>
 
   <script>
     function formatVolumeInput(input) {
